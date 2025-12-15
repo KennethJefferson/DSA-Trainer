@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
 
@@ -15,10 +16,21 @@ export default async function MainLayout({
     redirect("/login");
   }
 
+  // Get user role from database
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  const userWithRole = {
+    ...session.user,
+    role: user?.role || "user",
+  };
+
   return (
     <div className="h-screen flex bg-background overflow-hidden">
       {/* Sidebar */}
-      <Sidebar user={session.user} />
+      <Sidebar user={userWithRole} />
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">

@@ -1,0 +1,526 @@
+
+> continue with phase 4
+
+● Let me first check the current project state and understand what phases exist and what phase 4 involves.
+
+● Search(pattern: "**/*.md", path: "E:\Workspace.Dev.JS\DSA_Trainer")
+  ⎿  Found 0 files
+
+● Search(pattern: "**/phase*.md", path: "E:\Workspace.Dev.JS\DSA_Trainer")
+  ⎿  Found 0 files
+
+● Search(pattern: "**/*plan*.md", path: "E:\Workspace.Dev.JS\DSA_Trainer")
+  ⎿  Found 0 files
+
+● Bash(ls -la "E:\Workspace.Dev.JS\DSA_Trainer")
+  ⎿  total 513
+     drwxr-xr-x 1 Tony Baloney 197121      0 Dec 15 07:07 .
+     drwxr-xr-x 1 Tony Baloney 197121      0 Dec 15 03:02 ..
+     … +18 lines (ctrl+o to expand)
+
+● Bash(git -C "E:\Workspace.Dev.JS\DSA_Trainer" log --oneline -10)
+  ⎿  6fa8740 Phase 3 complete, not tested. Will test once all phases of development are complete
+     dc0baf3 Phase 2 complete, not tested. Will test once all phases of development are complete
+     0b324fa init commit
+
+● Bash(ls -la "E:\Workspace.Dev.JS\DSA_Trainer\__docs")
+  ⎿  total 1796
+     drwxr-xr-x 1 Tony Baloney 197121       0 Dec 15 07:47 .
+     drwxr-xr-x 1 Tony Baloney 197121       0 Dec 15 07:07 ..
+     … +6 lines (ctrl+o to expand)
+
+● Read(__docs\ClaudeCode Session02 - Didn't get a chance to export 01.txt)
+  ⎿  Read 1195 lines
+
+● Read(__docs\ClaudeCode Session03.txt)
+  ⎿  Read 55 lines
+
+● I can see from the session logs that Phases 1-3 are complete:
+  - Phase 1: Database, Auth, UI Components, Core Pages
+  - Phase 2: Quiz Engine, 10 Question Type Components, Quiz API
+  - Phase 3: Code Execution (Judge0), Leaderboard, Course System, User Stats
+
+  Let me explore the current project structure to determine what Phase 4 should include.
+
+● Explore(Explore Phase 4 requirements)
+  ⎿  Done (35 tool uses · 66.6k tokens · 2m 14s)
+
+● Based on the exploration, Phase 4 focuses on Admin & Content Management. Let me create the implementation plan and start building.
+
+● Let me read the existing patterns to maintain consistency.
+
+● Read(src\app\(main)\layout.tsx)
+  ⎿  Read 33 lines
+
+● Read(prisma\schema.prisma)
+  ⎿  Read 337 lines
+
+● Read(src\components\dashboard\sidebar.tsx)
+  ⎿  Read 97 lines
+
+● Now I understand the patterns. Let me start building Phase 4. First, I'll update the schema to add user roles, then create the admin panel structure.
+
+● Update(prisma\schema.prisma)
+  ⎿  Updated prisma\schema.prisma with 7 additions
+       112      expert
+       113    }
+       114
+       115 +  enum UserRole {
+       116 +    user
+       117 +    creator
+       118 +    admin
+       119 +    superadmin
+       120 +  }
+       121 +
+       122    model Question {
+       123      id          String       @id @default(cuid())
+       124      type        QuestionType
+
+● Update(prisma\schema.prisma)
+  ⎿  Updated prisma\schema.prisma with 1 addition
+       25      // Profile
+       26      username      String?   @unique
+       27      bio           String?
+       28 +    role          UserRole  @default(user)
+       29
+       30      // Gamification
+       31      xp            Int       @default(0)
+
+● Now let me create the admin authorization helper and admin panel structure.
+
+● Write(src\lib\auth-utils.ts)
+  ⎿  Wrote 1 lines to src\lib\auth-utils.ts
+     import { getServerSession } from "next-auth";
+     import { redirect } from "next/navigation";
+     import { authOptions } from "./auth";
+     import { prisma } from "./prisma";
+     export type UserRole = "user" | "creator" | "admin" | "superadmin";
+     const ROLE_HIERARCHY: Record<UserRole, number> = {
+       user: 0,
+       creator: 1,
+
+● Bash(mkdir -p "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin" "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin/questions" "E:/Workspace.Dev.JS/DSA_Trai…)
+  ⎿  (No content)
+
+● Write(src\components\admin\admin-sidebar.tsx)
+  ⎿  Wrote 1 lines to src\components\admin\admin-sidebar.tsx
+     "use client";
+     import Link from "next/link";
+     import { usePathname } from "next/navigation";
+     import Image from "next/image";
+     import { cn } from "@/lib/cn";
+     import { Icon } from "@/components/ui";
+     interface AdminSidebarProps {
+       user: {
+
+● Write(src\components\admin\admin-header.tsx)
+  ⎿  Wrote 1 lines to src\components\admin\admin-header.tsx
+     "use client";
+     import { Icon } from "@/components/ui";
+     interface AdminHeaderProps {
+       title: string;
+       description?: string;
+       actions?: React.ReactNode;
+     }
+
+● Write(src\components\admin\index.ts)
+  ⎿  Wrote 1 lines to src\components\admin\index.ts
+     export { AdminSidebar } from "./admin-sidebar";
+     export { AdminHeader } from "./admin-header";
+
+● Now let me create the admin layout and dashboard page.
+
+● Write(src\app\(admin)\layout.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\layout.tsx
+     import { requireCreator } from "@/lib/auth-utils";
+     import { AdminSidebar } from "@/components/admin";
+     export default async function AdminLayout({
+       children,
+     }: {
+       children: React.ReactNode;
+     }) {
+       const user = await requireCreator();
+
+● Write(src\app\(admin)\admin\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\page.tsx
+     import { requireCreator } from "@/lib/auth-utils";
+     import { prisma } from "@/lib/prisma";
+     import { AdminHeader } from "@/components/admin";
+     import { Card, CardContent, Icon } from "@/components/ui";
+     import Link from "next/link";
+     export const metadata = {
+       title: "Admin Dashboard",
+     };
+
+● Let me read the question-builder reference to create the Question Builder UI.
+
+● Read(__docs\question-builder.jsx)
+  ⎿  Read 1598 lines
+
+● The reference implementation is comprehensive. Let me create a Next.js-compatible version with the existing UI components. I'll create the Question Builder page and Questions list page.
+
+● Bash(mkdir -p "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin/questions/create" "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin/questions/[id]" "E:/Wor…)
+  ⎿  (No content)
+
+● Write(src\components\admin\question-builder\constants.ts)
+  ⎿  Wrote 1 lines to src\components\admin\question-builder\constants.ts
+     export const QUESTION_TYPES = [
+       { value: "multiple_choice", label: "Multiple Choice", icon: "list", color: "bg-blue-500" },
+       { value: "multi_select", label: "Multi Select", icon: "check_box", color: "bg-indigo-500" },
+       { value: "fill_blank", label: "Fill in the Blank", icon: "code", color: "bg-emerald-500" },
+       { value: "drag_order", label: "Drag & Drop - Order", icon: "swap_vert", color: "bg-amber-500" },
+       { value: "drag_match", label: "Drag & Drop - Match", icon: "link", color: "bg-rose-500" },
+       { value: "drag_code_blocks", label: "Code Blocks", icon: "view_agenda", color: "bg-violet-500" },
+       { value: "code_writing", label: "Code Writing", icon: "code", color: "bg-cyan-500" },
+       { value: "debugging", label: "Debugging", icon: "bug_report", color: "bg-red-500" },
+       { value: "true_false", label: "True / False", icon: "toggle_on", color: "bg-teal-500" },
+
+● Write(src\components\admin\question-builder\types.ts)
+  ⎿  Wrote 1 lines to src\components\admin\question-builder\types.ts
+     import type { QuestionType, Difficulty } from "./constants";
+     export interface Hint {
+       id: string;
+       text: string;
+       xpPenalty: number;
+       order: number;
+     }
+     export interface Option {
+
+● Write(src\components\admin\question-builder\validation.ts)
+  ⎿  Wrote 1 lines to src\components\admin\question-builder\validation.ts
+     import type { QuestionFormData, ValidationResult, ValidationError } from "./types";
+     export function validateQuestion(question: QuestionFormData): ValidationResult {
+       const errors: ValidationError[] = [];
+       const warnings: ValidationError[] = [];
+       // Base validations
+       if (!question.title?.trim()) {
+         errors.push({ field: "title", message: "Title is required" });
+       }
+
+● Now let me create the main Question Builder form component.
+
+● Write(src\components\admin\question-builder\question-form.tsx)
+  ⎿  Wrote 1 lines to src\components\admin\question-builder\question-form.tsx
+     "use client";
+     import { useState, useCallback, useEffect } from "react";
+     import { useRouter } from "next/navigation";
+     import { toast } from "sonner";
+     import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
+     import { cn } from "@/lib/cn";
+     import { QUESTION_TYPES, DIFFICULTIES, TOPICS, LANGUAGES } from "./constants";
+     import type { QuestionFormData, QuestionContent, ValidationResult } from "./types";
+     import { getEmptyQuestion, getEmptyContent } from "./types";
+
+● Write(src\components\admin\question-builder\index.ts)
+  ⎿  Wrote 1 lines to src\components\admin\question-builder\index.ts
+     export { QuestionForm } from "./question-form";
+     export { QUESTION_TYPES, DIFFICULTIES, TOPICS, LANGUAGES } from "./constants";
+     export type { QuestionFormData, ValidationResult } from "./types";
+     export { getEmptyQuestion, getEmptyContent } from "./types";
+     export { validateQuestion } from "./validation";
+
+● Write(src\app\(admin)\admin\questions\create\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\questions\create\page.tsx
+     import { requireCreator } from "@/lib/auth-utils";
+     import { AdminHeader } from "@/components/admin";
+     import { QuestionForm } from "@/components/admin/question-builder";
+     export const metadata = {
+       title: "Create Question",
+     };
+     export default async function CreateQuestionPage() {
+       await requireCreator();
+
+● Write(src\app\(admin)\admin\questions\[id]\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\questions\[id]\page.tsx
+     import { notFound } from "next/navigation";
+     import { requireCreator } from "@/lib/auth-utils";
+     import { prisma } from "@/lib/prisma";
+     import { AdminHeader } from "@/components/admin";
+     import { QuestionForm } from "@/components/admin/question-builder";
+     import type { QuestionFormData } from "@/components/admin/question-builder";
+     export const metadata = {
+       title: "Edit Question",
+     };
+
+● Now let me create the Questions list page and update the progress.
+
+● Write(src\app\(admin)\admin\questions\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\questions\page.tsx
+     "use client";
+     import { useState, useEffect, useCallback } from "react";
+     import Link from "next/link";
+     import { useRouter, useSearchParams } from "next/navigation";
+     import { toast } from "sonner";
+     import { AdminHeader } from "@/components/admin";
+     import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
+     import { cn } from "@/lib/cn";
+     import { QUESTION_TYPES, DIFFICULTIES, TOPICS } from "@/components/admin/question-builder";
+
+● Now let me create the Quiz Builder and Users management pages.
+
+● Bash(mkdir -p "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin/quizzes/create" "E:/Workspace.Dev.JS/DSA_Trainer/src/app/(admin)/admin/quizzes/[id]")
+  ⎿  (No content)
+
+● Write(src\app\(admin)\admin\quizzes\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\quizzes\page.tsx
+     "use client";
+     import { useState, useEffect, useCallback } from "react";
+     import Link from "next/link";
+     import { toast } from "sonner";
+     import { AdminHeader } from "@/components/admin";
+     import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
+     import { cn } from "@/lib/cn";
+     import { DIFFICULTIES, TOPICS } from "@/components/admin/question-builder";
+
+● Write(src\app\(admin)\admin\quizzes\create\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\quizzes\create\page.tsx
+     "use client";
+     import { useState, useEffect } from "react";
+     import { useRouter } from "next/navigation";
+     import { toast } from "sonner";
+     import { AdminHeader } from "@/components/admin";
+     import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
+     import { cn } from "@/lib/cn";
+     import { DIFFICULTIES, TOPICS } from "@/components/admin/question-builder";
+
+● Now let me create the Users management page and the seed script.
+
+● Write(src\app\(admin)\admin\users\page.tsx)
+  ⎿  Wrote 1 lines to src\app\(admin)\admin\users\page.tsx
+     "use client";
+     import { useState, useEffect, useCallback } from "react";
+     import { toast } from "sonner";
+     import { AdminHeader } from "@/components/admin";
+     import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
+     import { cn } from "@/lib/cn";
+     interface User {
+       id: string;
+
+● Write(src\app\api\admin\users\route.ts)
+  ⎿  Wrote 1 lines to src\app\api\admin\users\route.ts
+     import { NextRequest, NextResponse } from "next/server";
+     import { requireAdmin } from "@/lib/auth-utils";
+     import { prisma } from "@/lib/prisma";
+     export async function GET(request: NextRequest) {
+       try {
+         await requireAdmin();
+         const searchParams = request.nextUrl.searchParams;
+         const search = searchParams.get("search") || "";
+
+● Bash(mkdir -p "E:/Workspace.Dev.JS/DSA_Trainer/src/app/api/admin/users/[id]")
+  ⎿  (No content)
+
+● Write(src\app\api\admin\users\[id]\route.ts)
+  ⎿  Wrote 1 lines to src\app\api\admin\users\[id]\route.ts
+     import { NextRequest, NextResponse } from "next/server";
+     import { requireAdmin } from "@/lib/auth-utils";
+     import { prisma } from "@/lib/prisma";
+     interface RouteParams {
+       params: Promise<{ id: string }>;
+     }
+     export async function PATCH(request: NextRequest, { params }: RouteParams) {
+       try {
+
+● Now let me create the database seed script with sample data.
+
+● Write(prisma\seed.ts)
+  ⎿  Wrote 1 lines to prisma\seed.ts
+     import { PrismaClient } from "@prisma/client";
+     import bcrypt from "bcryptjs";
+     const prisma = new PrismaClient();
+     async function main() {
+       console.log("🌱 Starting database seed...\n");
+       // Create admin user
+       const adminPassword = await bcrypt.hash("admin123", 10);
+
+● Now let me update package.json to add the seed script and add the admin link to the main sidebar.
+
+● Read(package.json)
+  ⎿  Read 50 lines
+
+● The seed script is already configured. Now let me update the main sidebar to include an admin link for authorized users.
+
+● Update(src\components\dashboard\sidebar.tsx)
+  ⎿  Updated src\components\dashboard\sidebar.tsx with 4 additions
+       22      { href: "/settings", icon: "settings", label: "Settings" },
+       23    ];
+       24
+       25 +  const adminNavItems = [
+       26 +    { href: "/admin", icon: "admin_panel_settings", label: "Admin Panel" },
+       27 +  ];
+       28 +
+       29    export function Sidebar({ user }: SidebarProps) {
+       30      const pathname = usePathname();
+       31
+
+● Update(src\components\dashboard\sidebar.tsx)
+  ⎿  Updated src\components\dashboard\sidebar.tsx with 1 addition
+       11        name?: string | null;
+       12        email?: string | null;
+       13        image?: string | null;
+       14 +      role?: string;
+       15      };
+       16    }
+       17
+
+● Read(src\components\dashboard\sidebar.tsx)
+  ⎿  Read 75 lines
+
+● Update(src\components\dashboard\sidebar.tsx)
+  ⎿  Updated src\components\dashboard\sidebar.tsx with 26 additions
+       29
+       30    export function Sidebar({ user }: SidebarProps) {
+       31      const pathname = usePathname();
+       32 +    const canAccessAdmin = user.role && ["creator", "admin", "superadmin"].includes(user.role);
+       33
+       34      return (
+       35        <aside className="w-64 bg-surface-dark h-full flex flex-col border-r border-white/5 flex-shrink-0">
+     ...
+       62                </Link>
+       63              );
+       64            })}
+       65 +
+       66 +          {/* Admin Section */}
+       67 +          {canAccessAdmin && (
+       68 +            <>
+       69 +              <div className="h-px bg-white/10 my-4" />
+       70 +              {adminNavItems.map((item) => {
+       71 +                const isActive = pathname.startsWith(item.href);
+       72 +                return (
+       73 +                  <Link
+       74 +                    key={item.href}
+       75 +                    href={item.href}
+       76 +                    className={cn(
+       77 +                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
+       78 +                      isActive
+       79 +                        ? "bg-orange-500/10 text-orange-400 border-l-4 border-orange-500"
+       80 +                        : "text-text-muted hover:bg-white/5 hover:text-white"
+       81 +                    )}
+       82 +                  >
+       83 +                    <Icon name={item.icon} filled={isActive} />
+       84 +                    <span className="font-medium text-sm">{item.label}</span>
+       85 +                  </Link>
+       86 +                );
+       87 +              })}
+       88 +            </>
+       89 +          )}
+       90          </nav>
+       91
+       92          {/* User Profile Card */}
+
+● Now let me update the main layout to include the user role.
+
+● Update(src\app\(main)\layout.tsx)
+  ⎿  Updated src\app\(main)\layout.tsx with 13 additions and 1 removal
+       1    import { redirect } from "next/navigation";
+       2    import { getServerSession } from "next-auth";
+       3    import { authOptions } from "@/lib/auth";
+       4 +  import { prisma } from "@/lib/prisma";
+       5    import { Sidebar } from "@/components/dashboard/sidebar";
+       6    import { Header } from "@/components/dashboard/header";
+       7
+     ...
+       15        redirect("/login");
+       16      }
+       17
+       18 +    // Get user role from database
+       19 +    const user = await prisma.user.findUnique({
+       20 +      where: { id: session.user.id },
+       21 +      select: { role: true },
+       22 +    });
+       23 +
+       24 +    const userWithRole = {
+       25 +      ...session.user,
+       26 +      role: user?.role || "user",
+       27 +    };
+       28 +
+       29      return (
+       30        <div className="h-screen flex bg-background overflow-hidden">
+       31          {/* Sidebar */}
+       32 -        <Sidebar user={session.user} />
+       32 +        <Sidebar user={userWithRole} />
+       33
+       34          {/* Main content */}
+       35          <main className="flex-1 flex flex-col h-full overflow-hidden">
+
+● Phase 4 Complete! Here's what was built:
+
+  Phase 4 Summary - Admin & Content Management
+
+  Admin Panel Structure
+
+  - Admin Route Group (/admin/*) with role-protected layout
+  - Admin Sidebar with orange accent theme and navigation
+  - Role-based Authorization (src/lib/auth-utils.ts)
+    - User roles: user, creator, admin, superadmin
+    - requireCreator(), requireAdmin() middleware functions
+
+  Admin Pages
+
+  | Route                   | Description                                                       |
+  |-------------------------|-------------------------------------------------------------------|
+  | /admin                  | Dashboard with system stats (questions, quizzes, users, attempts) |
+  | /admin/questions        | Question list with filters, search, bulk delete, import/export    |
+  | /admin/questions/create | Full question builder supporting all 10 types                     |
+  | /admin/questions/[id]   | Edit existing questions                                           |
+  | /admin/quizzes          | Quiz list with management                                         |
+  | /admin/quizzes/create   | Quiz builder with question selection                              |
+  | /admin/users            | User management with role assignment (admin only)                 |
+
+  Question Builder
+
+  - Type selection for all 10 question types
+  - Live validation with error/warning feedback
+  - Content editors specific to each type:
+    - Multiple choice/multi-select with option management
+    - Fill-in-blank with template and blank definitions
+    - Drag-order/parsons with sortable items
+    - Code writing/debugging with test cases
+    - And more...
+  - Hints and explanation management
+  - XP reward configuration
+
+  Database Seeding (npm run db:seed)
+
+  - Admin user: admin@dsatrainer.com / admin123
+  - Test user: test@dsatrainer.com / test123
+  - 11 sample questions (all types)
+  - Sample quiz and course
+  - 5 achievement badges
+
+  Import/Export
+
+  - JSON export of questions with filters
+  - Bulk JSON import with validation
+  - Error reporting on failed imports
+
+  Files Created
+
+  - src/lib/auth-utils.ts - Role authorization utilities
+  - src/components/admin/ - Admin sidebar, header
+  - src/components/admin/question-builder/ - Form, types, validation, constants
+  - src/app/(admin)/ - All admin pages
+  - src/app/api/admin/users/ - User management API
+  - prisma/seed.ts - Database seeder
+
+  Main App Integration
+
+  - Admin Panel link appears in sidebar for creator/admin/superadmin roles
+  - User role fetched from database in main layout
+
+  To Test
+
+  # Set up database and seed
+  npm run db:push
+  npm run db:seed
+
+  # Start dev server
+  npm run dev
+
+  # Login as admin@dsatrainer.com / admin123
+  # Navigate to Admin Panel from sidebar
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ bypass permissions on (alt+m to cycle)                                                                                                            Context left until auto-compact: 4%

@@ -25,6 +25,7 @@ model User {
   // Profile
   username      String?   @unique
   bio           String?
+  role          UserRole  @default(user)
 
   // Gamification
   xp            Int       @default(0)
@@ -110,6 +111,13 @@ enum Difficulty {
   medium
   hard
   expert
+}
+
+enum UserRole {
+  user
+  creator
+  admin
+  superadmin
 }
 
 model Question {

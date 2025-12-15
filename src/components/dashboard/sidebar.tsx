@@ -11,6 +11,7 @@ interface SidebarProps {
     name?: string | null;
     email?: string | null;
     image?: string | null;
+    role?: string;
   };
 }
 
@@ -22,8 +23,13 @@ const navItems = [
   { href: "/settings", icon: "settings", label: "Settings" },
 ];
 
+const adminNavItems = [
+  { href: "/admin", icon: "admin_panel_settings", label: "Admin Panel" },
+];
+
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
+  const canAccessAdmin = user.role && ["creator", "admin", "superadmin"].includes(user.role);
 
   return (
     <aside className="w-64 bg-surface-dark h-full flex flex-col border-r border-white/5 flex-shrink-0">
@@ -57,6 +63,31 @@ export function Sidebar({ user }: SidebarProps) {
             </Link>
           );
         })}
+
+        {/* Admin Section */}
+        {canAccessAdmin && (
+          <>
+            <div className="h-px bg-white/10 my-4" />
+            {adminNavItems.map((item) => {
+              const isActive = pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
+                    isActive
+                      ? "bg-orange-500/10 text-orange-400 border-l-4 border-orange-500"
+                      : "text-text-muted hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  <Icon name={item.icon} filled={isActive} />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </Link>
+              );
+            })}
+          </>
+        )}
       </nav>
 
       {/* User Profile Card */}
