@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumina - Login</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-hover": "#6b10c6",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#261933",
+                        "border-dark": "#4d3267",
+                        "text-secondary": "#ad92c9",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark theme feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4d3267; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-white">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Left Side: Visual / Hero -->
+<div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden bg-background-dark border-r border-border-dark">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img class="h-full w-full object-cover opacity-60 mix-blend-overlay" data-alt="Abstract purple geometric 3D shapes floating in dark space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkTNyTSbfUphI-lE4wAZNsL4KvqsAcbaI4dngU9gDRfh8zVbKc9Hzy-MAwwKD_NRvPp7RQXmusE89u8Seox4so5YQ0-diheCP87i7cTLdu2rWnal29GJaGZLoUmr8r3UNGEqVPsnw2XOlZ_EaVEQs8pudUZyxsHGLPd0MqcXNhWJa31g_F5m63EfiTMevm1p-C5fKSTOElUtGkb7KtRzy4K60hxgeUjsILwNmfFUTOPdrtxri6ZWMBLc1bVdlV_MW50N_fbD9oK5w"/>
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark/30 via-background-dark/80 to-background-dark"></div>
+</div>
+<!-- Content overlay -->
+<div class="relative z-10 flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+<svg class="h-6 w-6" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h2 class="text-2xl font-bold tracking-tight text-white">Lumina</h2>
+</div>
+<div class="relative z-10 max-w-lg space-y-6">
+<blockquote class="text-3xl font-medium leading-tight text-white">
+                    "Learning is the only thing the mind never exhausts, never fears, and never regrets."
+                </blockquote>
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-full border-2 border-primary p-0.5">
+<img class="h-full w-full rounded-full object-cover" data-alt="Portrait of a young female student smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFJW5Al4EnBXeodKlV1DwMrEIsrOPXNJn7kcZx3hDtiOjOEFtSFPveTcXBKkStUkUfhicwwstUpx7-fCPtidSg9HJgJ5Rt-qgmTMB7AbGJtHSG6_hTBULyXzef_wE0mdXLrNMRl-NdyOShTLhGmsaiz_Loycf-6hVN0ToFJZZ0-emIx27DRpOb6DGco3yMd_HjYnEZY1WBWUQ58zLeDwOMvAvuGiB5Re-LxR8TAELPk6LezwJP_7AoGDjJjo8j6HFYrm2CnKrFEWU"/>
+</div>
+<div>
+<p class="font-bold text-white">Sarah Jenkins</p>
+<p class="text-sm text-text-secondary">Lead Instructor @ Lumina</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Login Form -->
+<div class="flex w-full lg:w-1/2 flex-col justify-center items-center bg-background-dark px-6 py-12 lg:px-20 overflow-y-auto">
+<div class="w-full max-w-[440px] flex flex-col gap-8">
+<!-- Mobile Logo (Only visible on small screens) -->
+<div class="flex items-center gap-3 lg:hidden mb-4">
+<div class="flex h-8 w-8 items-center justify-center rounded bg-primary text-white">
+<svg class="h-5 w-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold text-white">Lumina</h2>
+</div>
+<!-- Header -->
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-black tracking-[-0.033em] text-white lg:text-4xl">Welcome back!</h1>
+<p class="text-base font-normal leading-normal text-text-secondary">
+                        Please enter your details to access your dashboard.
+                    </p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5">
+<!-- Email Input -->
+<div class="flex flex-col gap-2">
+<label class="text-base font-medium text-white" for="email">Email or Username</label>
+<div class="relative">
+<input class="w-full rounded-xl border border-border-dark bg-surface-dark px-4 py-3.5 text-base text-white placeholder-text-secondary shadow-sm transition-all focus:border-primary focus:bg-surface-dark focus:outline-none focus:ring-1 focus:ring-primary" id="email" placeholder="Enter your email" type="email"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary select-none pointer-events-none">
+                                mail
+                            </span>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-2">
+<label class="text-base font-medium text-white" for="password">Password</label>
+<div class="relative group">
+<input class="w-full rounded-xl border border-border-dark bg-surface-dark px-4 py-3.5 pr-12 text-base text-white placeholder-text-secondary shadow-sm transition-all focus:border-primary focus:bg-surface-dark focus:outline-none focus:ring-1 focus:ring-primary" id="password" placeholder="Enter your password" type="password"/>
+<button class="absolute right-0 top-0 bottom-0 flex items-center justify-center px-4 text-text-secondary hover:text-white transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex items-center justify-end">
+<a class="text-sm font-medium text-primary hover:text-primary-hover hover:underline transition-colors" href="#">
+                            Forgot Password?
+                        </a>
+</div>
+<!-- Submit Button -->
+<button class="mt-2 flex w-full items-center justify-center rounded-xl bg-primary py-3.5 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-hover hover:shadow-primary/40 active:scale-[0.98]" type="button">
+                        Log In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-border-dark"></div>
+<span class="mx-4 flex-shrink-0 text-xs font-medium uppercase text-text-secondary">Or continue with</span>
+<div class="flex-grow border-t border-border-dark"></div>
+</div>
+<!-- Social Login -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 rounded-xl border border-border-dark bg-surface-dark py-3 transition-colors hover:bg-[#362348] hover:border-[#5e3c7d] active:scale-[0.98]">
+<svg class="h-5 w-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+<span class="text-sm font-bold text-white">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-xl border border-border-dark bg-surface-dark py-3 transition-colors hover:bg-[#362348] hover:border-[#5e3c7d] active:scale-[0.98]">
+<svg class="h-5 w-5 text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+</svg>
+<span class="text-sm font-bold text-white">GitHub</span>
+</button>
+</div>
+<!-- Sign Up Link -->
+<div class="flex justify-center gap-1.5 pt-4">
+<span class="text-text-secondary">Don't have an account?</span>
+<a class="font-bold text-white hover:text-primary hover:underline transition-colors" href="#">Sign Up</a>
+</div>
+</div>
+</div>
+</div>
+</body></html>

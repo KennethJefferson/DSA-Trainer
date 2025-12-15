@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quiz View</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#2a1d36",
+                        "surface-border": "#4d3267",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4d3267; 
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-surface-border bg-white/50 dark:bg-surface-dark/50 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">school</span>
+</div>
+<div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Advanced Javascript</h2>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Module 3: Async Functions</p>
+</div>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent border border-gray-300 dark:border-surface-border hover:bg-gray-100 dark:hover:bg-surface-border/50 text-sm font-bold transition-all text-slate-700 dark:text-white">
+<span class="material-symbols-outlined text-lg mr-2">logout</span>
+<span class="truncate">Exit Quiz</span>
+</button>
+</header>
+<div class="flex flex-1 flex-col lg:flex-row h-full max-w-[1400px] mx-auto w-full p-4 lg:p-8 gap-6 lg:gap-10">
+<!-- Sidebar / Question Navigator (Left) -->
+<aside class="w-full lg:w-80 flex flex-col gap-6 order-2 lg:order-1">
+<!-- Timer Card -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-5 border border-gray-200 dark:border-surface-border shadow-sm">
+<div class="flex items-center gap-2 mb-4 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-xl">timer</span>
+<span class="text-sm font-semibold uppercase tracking-wider">Time Remaining</span>
+</div>
+<div class="flex gap-3">
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark border border-gray-200 dark:border-surface-border">
+<p class="text-2xl font-bold font-mono">14</p>
+</div>
+<p class="text-xs font-medium text-slate-500 dark:text-slate-400">Minutes</p>
+</div>
+<div class="flex items-center pt-2">
+<span class="text-xl font-bold text-slate-400">:</span>
+</div>
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark border border-gray-200 dark:border-surface-border">
+<p class="text-2xl font-bold font-mono">20</p>
+</div>
+<p class="text-xs font-medium text-slate-500 dark:text-slate-400">Seconds</p>
+</div>
+</div>
+</div>
+<!-- Progress & Map -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-5 border border-gray-200 dark:border-surface-border shadow-sm flex-1">
+<div class="flex justify-between items-end mb-3">
+<p class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Progress</p>
+<p class="text-sm font-bold text-primary">40%</p>
+</div>
+<div class="w-full bg-slate-100 dark:bg-background-dark rounded-full h-2.5 mb-8">
+<div class="bg-primary h-2.5 rounded-full transition-all duration-500" style="width: 40%"></div>
+</div>
+<div class="grid grid-cols-5 gap-3">
+<!-- Completed -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-lg">check</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-lg">check</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-lg">check</span>
+</button>
+<!-- Current -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-white dark:bg-surface-dark border-2 border-primary text-primary text-sm font-bold ring-2 ring-primary/20 ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark transition-transform hover:scale-105">
+                        4
+                    </button>
+<!-- Pending -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">5</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">6</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">7</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">8</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">9</button>
+<!-- Flagged/Final -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-slate-100 dark:bg-background-dark/50 text-slate-400 dark:text-slate-500 text-sm font-bold border border-transparent hover:border-surface-border transition-colors">10</button>
+</div>
+<div class="mt-8 pt-6 border-t border-gray-200 dark:border-surface-border">
+<div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+<div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-primary"></div> Answered</div>
+<div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full border-2 border-primary box-border"></div> Current</div>
+<div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-slate-100 dark:bg-background-dark"></div> Pending</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area (Center/Right) -->
+<main class="flex-1 flex flex-col order-1 lg:order-2">
+<!-- Question Card -->
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-6 lg:p-10 border border-gray-200 dark:border-surface-border shadow-lg flex-1 flex flex-col">
+<!-- Question Meta -->
+<div class="flex justify-between items-center mb-6">
+<span class="inline-flex items-center rounded-md bg-purple-50 dark:bg-purple-900/30 px-3 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-purple-700/10">Question 4 of 10</span>
+<button class="text-slate-400 hover:text-primary transition-colors" title="Bookmark Question">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+</div>
+<!-- Headline -->
+<h1 class="text-2xl lg:text-3xl font-bold leading-tight mb-8 text-slate-900 dark:text-white">
+                    Which of the following functions allows you to schedule a function execution after a set delay?
+                </h1>
+<!-- Optional: Code Snippet / Image -->
+<div class="mb-8 rounded-xl overflow-hidden bg-[#1e1e1e] border border-gray-800 shadow-inner">
+<div class="flex items-center px-4 py-2 bg-[#2d2d2d] border-b border-gray-700">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-red-500"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+<div class="w-3 h-3 rounded-full bg-green-500"></div>
+</div>
+<span class="ml-4 text-xs text-gray-400 font-mono">async_example.js</span>
+</div>
+<pre class="p-6 overflow-x-auto text-sm font-mono text-gray-300 leading-relaxed"><code><span class="text-purple-400">console</span>.<span class="text-blue-400">log</span>(<span class="text-green-400">"Start"</span>);
+
+<span class="text-gray-500">// How do we delay this log by 1000ms?</span>
+<span class="text-yellow-400">???</span>(() =&gt; {
+    <span class="text-purple-400">console</span>.<span class="text-blue-400">log</span>(<span class="text-green-400">"Delayed"</span>);
+}, <span class="text-orange-400">1000</span>);
+
+<span class="text-purple-400">console</span>.<span class="text-blue-400">log</span>(<span class="text-green-400">"End"</span>);</code></pre>
+</div>
+<!-- Answer Options (Grid on larger screens) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" style="--radio-dot-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(128,19,236)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3ccircle cx=%278%27 cy=%278%27 r=%273%27/%3e%3c/svg%3e');">
+<label class="group relative flex cursor-pointer items-start gap-4 rounded-xl border border-gray-200 dark:border-surface-border bg-slate-50 dark:bg-background-dark p-4 transition-all hover:bg-white dark:hover:bg-[#2e233b] hover:border-primary/50 hover:shadow-md">
+<div class="flex items-center h-6">
+<input class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 dark:border-slate-500 checked:border-primary checked:bg-primary transition-all focus:ring-offset-0 focus:ring-0" name="quiz-ans" type="radio"/>
+<div class="pointer-events-none absolute left-4 top-4 h-5 w-5 rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Option A</span>
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal font-mono">setInterval()</p>
+</div>
+<!-- Active Border Overlay -->
+<div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+<label class="group relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-primary bg-purple-50 dark:bg-[#2e233b] p-4 transition-all shadow-md">
+<div class="flex items-center h-6">
+<input checked="" class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 dark:border-slate-500 checked:border-primary checked:bg-primary transition-all focus:ring-offset-0 focus:ring-0" name="quiz-ans" type="radio"/>
+<div class="pointer-events-none absolute left-[18px] top-[18px] h-5 w-5 rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-primary mb-1">Option B</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium leading-normal font-mono">setTimeout()</p>
+</div>
+<!-- This div mimics the border interaction for the selected state logic in a real app -->
+</label>
+<label class="group relative flex cursor-pointer items-start gap-4 rounded-xl border border-gray-200 dark:border-surface-border bg-slate-50 dark:bg-background-dark p-4 transition-all hover:bg-white dark:hover:bg-[#2e233b] hover:border-primary/50 hover:shadow-md">
+<div class="flex items-center h-6">
+<input class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 dark:border-slate-500 checked:border-primary checked:bg-primary transition-all focus:ring-offset-0 focus:ring-0" name="quiz-ans" type="radio"/>
+<div class="pointer-events-none absolute left-4 top-4 h-5 w-5 rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Option C</span>
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal font-mono">requestAnimationFrame()</p>
+</div>
+<div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+<label class="group relative flex cursor-pointer items-start gap-4 rounded-xl border border-gray-200 dark:border-surface-border bg-slate-50 dark:bg-background-dark p-4 transition-all hover:bg-white dark:hover:bg-[#2e233b] hover:border-primary/50 hover:shadow-md">
+<div class="flex items-center h-6">
+<input class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 dark:border-slate-500 checked:border-primary checked:bg-primary transition-all focus:ring-offset-0 focus:ring-0" name="quiz-ans" type="radio"/>
+<div class="pointer-events-none absolute left-4 top-4 h-5 w-5 rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Option D</span>
+<p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-normal font-mono">setImmediate()</p>
+</div>
+<div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+</div>
+<!-- Footer Actions -->
+<div class="mt-auto pt-6 border-t border-gray-200 dark:border-surface-border flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
+<button class="w-full sm:w-auto px-6 h-12 rounded-lg border border-gray-300 dark:border-surface-border text-slate-700 dark:text-white font-bold text-sm hover:bg-gray-100 dark:hover:bg-surface-border/50 transition-colors flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                        Previous
+                    </button>
+<button class="w-full sm:w-auto px-8 h-12 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-lg shadow-primary/30 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 group">
+                        Next Question
+                        <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

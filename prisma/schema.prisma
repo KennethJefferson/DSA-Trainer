@@ -1,0 +1,336 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Authentication Models (NextAuth)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For credentials auth (hashed)
+
+  // Profile
+  username      String?   @unique
+  bio           String?
+
+  // Gamification
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  streak        Int       @default(0)
+  lastActiveAt  DateTime?
+
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  questions     Question[]        @relation("CreatedQuestions")
+  quizAttempts  QuizAttempt[]
+  progress      UserProgress?
+  badges        UserBadge[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// Question & Quiz Models
+// ============================================
+
+enum QuestionType {
+  multiple_choice
+  multi_select
+  fill_blank
+  drag_order
+  drag_match
+  drag_code_blocks
+  code_writing
+  debugging
+  true_false
+  parsons
+}
+
+enum Difficulty {
+  beginner
+  easy
+  medium
+  hard
+  expert
+}
+
+model Question {
+  id          String       @id @default(cuid())
+  type        QuestionType
+  title       String       @db.VarChar(200)
+  description String?      @db.Text
+  difficulty  Difficulty
+  topics      String[]     // Array of topics
+  tags        String[]     @default([])
+  xpReward    Int          @default(10)
+  timeLimit   Int?         // Seconds, null = no limit
+  hints       Json         @default("[]") // Array of Hint objects
+  explanation String?      @db.Text
+  content     Json         // Type-specific content
+  isPublic    Boolean      @default(false)
+  metadata    Json         @default("{}")
+
+  // Relations
+  createdById String?
+  createdBy   User?        @relation("CreatedQuestions", fields: [createdById], references: [id])
+  quizzes     QuizQuestion[]
+  attempts    QuestionAttempt[]
+
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([type])
+  @@index([difficulty])
+  @@index([topics])
+  @@index([tags])
+  @@index([isPublic])
+  @@index([createdById])
+}
+
+model Quiz {
+  id          String       @id @default(cuid())
+  title       String       @db.VarChar(200)
+  description String?      @db.Text
+  difficulty  Difficulty?
+  topics      String[]     @default([])
+  isPublic    Boolean      @default(false)
+  timeLimit   Int?         // Total quiz time limit
+  passingScore Int         @default(70) // Percentage
+
+  // Relations
+  questions   QuizQuestion[]
+  attempts    QuizAttempt[]
+
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([isPublic])
+  @@index([topics])
+}
+
+model QuizQuestion {
+  id         String   @id @default(cuid())
+  quizId     String
+  questionId String
+  order      Int      // Display order in quiz
+
+  quiz     Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, questionId])
+  @@index([quizId])
+  @@index([questionId])
+}
+
+// ============================================
+// Attempt & Progress Models
+// ============================================
+
+model QuizAttempt {
+  id            String    @id @default(cuid())
+  userId        String
+  quizId        String
+
+  // Results
+  score         Int       @default(0)    // Percentage
+  xpEarned      Int       @default(0)
+  correctCount  Int       @default(0)
+  totalCount    Int       @default(0)
+  timeSpent     Int       @default(0)    // Seconds
+
+  // Status
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz          Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers       QuestionAttempt[]
+
+  @@index([userId])
+  @@index([quizId])
+  @@index([completedAt])
+}
+
+model QuestionAttempt {
+  id              String      @id @default(cuid())
+  quizAttemptId   String
+  questionId      String
+
+  // Response
+  userAnswer      Json        // User's submitted answer
+  isCorrect       Boolean
+  xpEarned        Int         @default(0)
+  hintsUsed       Int         @default(0)
+  timeSpent       Int         @default(0) // Seconds
+
+  // Timestamps
+  answeredAt      DateTime    @default(now())
+
+  // Relations
+  quizAttempt     QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  question        Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([quizAttemptId])
+  @@index([questionId])
+}
+
+model UserProgress {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+
+  // Stats
+  totalXp           Int      @default(0)
+  totalQuizzes      Int      @default(0)
+  totalQuestions    Int      @default(0)
+  correctAnswers    Int      @default(0)
+  currentStreak     Int      @default(0)
+  longestStreak     Int      @default(0)
+
+  // Topic mastery (JSON object: { topic: { completed, correct, mastery } })
+  topicProgress     Json     @default("{}")
+
+  // Daily activity (JSON object: { "2024-01-15": { quizzes, xp } })
+  dailyActivity     Json     @default("{}")
+
+  // Timestamps
+  lastQuizAt        DateTime?
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// Gamification Models
+// ============================================
+
+model Badge {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String
+  icon        String      // Material icon name
+  category    String      // Achievement category
+  criteria    Json        // { type: "xp", value: 1000 } or { type: "streak", value: 7 }
+  xpBonus     Int         @default(0)
+
+  users       UserBadge[]
+
+  createdAt   DateTime    @default(now())
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+}
+
+// ============================================
+// Course/Learning Path Models (Future)
+// ============================================
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  slug        String   @unique
+  thumbnail   String?
+  topics      String[] @default([])
+  difficulty  Difficulty?
+  isPublished Boolean  @default(false)
+  order       Int      @default(0)
+
+  modules     Module[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  description String?
+  order       Int      @default(0)
+
+  // Can reference quizzes via JSON or separate relation
+  quizIds     String[] @default([])
+
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([courseId])
+}

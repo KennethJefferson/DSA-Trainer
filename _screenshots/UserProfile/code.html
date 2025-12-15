@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile - QuizMaster</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#231530",
+                        "border-dark": "#362348",
+                        "text-secondary": "#ad92c9"
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white min-h-screen flex flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark bg-background-dark/95 backdrop-blur-sm px-4 lg:px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined !text-3xl">school</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">QuizMaster</h2>
+</div>
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Courses</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Community</a>
+<a class="text-white text-sm font-medium leading-normal border-b-2 border-primary pb-0.5" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64 group">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-transparent group-focus-within:border-primary/50 transition-colors bg-surface-dark">
+<div class="text-text-secondary flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-text-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search quizzes..." value=""/>
+</div>
+</label>
+<div class="relative">
+<span class="absolute top-0 right-0 size-2.5 bg-primary rounded-full border-2 border-background-dark"></span>
+<span class="material-symbols-outlined text-text-secondary hover:text-white cursor-pointer text-2xl">notifications</span>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-border-dark" data-alt="Small user avatar thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA98C8puTyFGQRSGfXnR4THWV-jBCtY931CYhxO8o28aikXQ9_1uskBs52JhCCJ9Wq4fPXC1_4fmArneDcFHNsKAWIpz5xxNwKeI5l6C-09oVnF2NwisZQo7ra3rzCmo_rlkaZVyAz5kbYXI53LSudUYodi3T4pc0vbbuwfTevTbPCxgvl2deDUVGWgAEf69ix6-NbUk_xX7DmY8RHV4NZurVX7sekD6nFXyf9ERmONsplUccCxH6zOepIDVNEjXgzwqL2QWebjOoo");'></div>
+</div>
+</header>
+<!-- Main Layout -->
+<main class="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">User Profile</h1>
+<p class="text-text-secondary text-base font-normal mt-2">Manage your personal information, view achievements, and track your progress.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Sidebar (Profile Summary) -->
+<div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+<!-- Profile Card -->
+<div class="bg-surface-dark border border-border-dark rounded-2xl p-6 flex flex-col items-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-primary/20 to-transparent"></div>
+<div class="relative mb-4 group cursor-pointer">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-primary/20 transition-all group-hover:ring-primary/40" data-alt="Large user profile avatar showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDlI791857zCJwuiAsl5kyg00BWdXXaKevDZcFdgqj4AlSnVikl2hjE61FtV39xUBgCo-RuLb2H0mCt0I8qMWftomy5tqTM6iY-a7zodD7_KTPB2Tln5Qo-_hrRH-M-j7EeBqcFT_dC6Enqu4GR92n6qo4hlIifynSSRZNo-9sChSZDklXxzaUlfDkgXOIYAQaEDEZh5j7gAtLEn0Lp_Lr_FM00MJdQprdz5ingt4TduFIss7fKxBLU_IDeG3hd9Tysq8ozom1DmkI");'></div>
+<div class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-4 border-surface-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-sm font-bold">edit</span>
+</div>
+</div>
+<div class="text-center mb-6">
+<h2 class="text-2xl font-bold text-white flex items-center justify-center gap-2">
+                            Alex Doe 
+                            <span class="material-symbols-outlined text-primary text-xl" title="Verified Scholar">verified</span>
+</h2>
+<p class="text-text-secondary text-sm mt-1">@alex_quizmaster</p>
+<div class="mt-3 inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                            Level 12 Scholar
+                        </div>
+</div>
+<!-- Progress Bar Component -->
+<div class="w-full mb-6">
+<div class="flex justify-between items-end mb-2">
+<span class="text-white text-sm font-medium">XP to Level 13</span>
+<span class="text-text-secondary text-xs">750/1000 XP</span>
+</div>
+<div class="w-full bg-background-dark rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<!-- Sidebar Stats -->
+<div class="grid grid-cols-2 w-full gap-4 mb-6 border-t border-b border-border-dark py-4">
+<div class="text-center border-r border-border-dark">
+<div class="text-xl font-bold text-white">142</div>
+<div class="text-xs text-text-secondary">Quizzes</div>
+</div>
+<div class="text-center">
+<div class="text-xl font-bold text-white">#48</div>
+<div class="text-xs text-text-secondary">Global Rank</div>
+</div>
+</div>
+<!-- Actions Component (Socials) -->
+<div class="w-full grid grid-cols-3 gap-3">
+<button class="flex items-center justify-center p-2.5 rounded-lg bg-background-dark hover:bg-border-dark transition-colors border border-border-dark group" title="GitHub">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">code</span>
+</button>
+<button class="flex items-center justify-center p-2.5 rounded-lg bg-background-dark hover:bg-border-dark transition-colors border border-border-dark group" title="Twitter">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">flutter_dash</span>
+</button>
+<button class="flex items-center justify-center p-2.5 rounded-lg bg-background-dark hover:bg-border-dark transition-colors border border-border-dark group" title="LinkedIn">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-white">business_center</span>
+</button>
+</div>
+<p class="mt-6 text-xs text-text-secondary">Member since September 2023</p>
+</div>
+<!-- Learning Streak Card -->
+<div class="bg-gradient-to-br from-orange-900/40 to-surface-dark border border-orange-500/20 rounded-2xl p-5 flex items-center justify-between">
+<div>
+<div class="text-orange-400 text-sm font-bold uppercase tracking-wider mb-1">Current Streak</div>
+<div class="text-3xl font-black text-white">12 Days</div>
+<div class="text-text-secondary text-xs mt-1">Keep it up! Don't break the chain.</div>
+</div>
+<div class="size-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-500 text-3xl">local_fire_department</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Content Area -->
+<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-8">
+<!-- Tab Navigation -->
+<div class="border-b border-border-dark">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+<a class="border-primary text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                            Overview
+                        </a>
+<a class="border-transparent text-text-secondary hover:text-white hover:border-gray-500 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">military_tech</span>
+                            Achievements
+                        </a>
+<a class="border-transparent text-text-secondary hover:text-white hover:border-gray-500 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                            Settings
+                        </a>
+<a class="border-transparent text-text-secondary hover:text-white hover:border-gray-500 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                            Billing
+                        </a>
+</nav>
+</div>
+<!-- Content Sections -->
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-dark border border-border-dark rounded-xl p-5 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute right-[-10px] top-[-10px] bg-primary/5 size-24 rounded-full group-hover:scale-110 transition-transform"></div>
+<div class="flex items-center gap-2 text-text-secondary mb-2">
+<span class="material-symbols-outlined">checklist</span>
+<span class="text-sm font-medium">Total Quizzes</span>
+</div>
+<div class="text-3xl font-bold text-white">1,240</div>
+<div class="text-xs text-green-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +12% this month
+                        </div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-5 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute right-[-10px] top-[-10px] bg-blue-500/5 size-24 rounded-full group-hover:scale-110 transition-transform"></div>
+<div class="flex items-center gap-2 text-text-secondary mb-2">
+<span class="material-symbols-outlined">percent</span>
+<span class="text-sm font-medium">Accuracy Rate</span>
+</div>
+<div class="text-3xl font-bold text-white">87.5%</div>
+<div class="text-xs text-text-secondary">Top 5% of users</div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-5 flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute right-[-10px] top-[-10px] bg-purple-500/5 size-24 rounded-full group-hover:scale-110 transition-transform"></div>
+<div class="flex items-center gap-2 text-text-secondary mb-2">
+<span class="material-symbols-outlined">timer</span>
+<span class="text-sm font-medium">Study Time</span>
+</div>
+<div class="text-3xl font-bold text-white">42h 15m</div>
+<div class="text-xs text-green-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +3h this week
+                        </div>
+</div>
+</div>
+<!-- Activity Heatmap (Simplified) -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-white text-lg font-bold">Learning Activity</h3>
+<div class="flex items-center gap-2 text-xs text-text-secondary">
+<span>Less</span>
+<div class="flex gap-1">
+<div class="size-3 rounded-sm bg-border-dark"></div>
+<div class="size-3 rounded-sm bg-primary/40"></div>
+<div class="size-3 rounded-sm bg-primary/70"></div>
+<div class="size-3 rounded-sm bg-primary"></div>
+</div>
+<span>More</span>
+</div>
+</div>
+<div class="flex gap-1 flex-wrap h-24 content-center overflow-hidden" data-alt="Grid of small purple squares representing daily learning activity">
+<!-- Generated Heatmap Cells Mockup -->
+<div class="flex flex-col flex-wrap h-full gap-1 w-full">
+<!-- We simulate columns of 7 days -->
+<!-- Just creating a visual texture with divs -->
+<script>
+                                for(let i=0; i<300; i++) {
+                                    const opacity = Math.random() > 0.7 ? (Math.random() > 0.5 ? 'bg-primary' : 'bg-primary/50') : 'bg-border-dark';
+                                    document.write(`<div class="size-3 rounded-[2px] ${opacity}"></div>`);
+                                }
+                            </script>
+</div>
+</div>
+</div>
+<!-- Achievements Section -->
+<div>
+<h3 class="text-white text-lg font-bold mb-4">Recent Badges</h3>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-border-dark/50 transition-colors cursor-pointer group">
+<div class="size-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-600 p-0.5 shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform">
+<div class="size-full rounded-full bg-surface-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-500 text-3xl">emoji_events</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-white font-bold text-sm">Quiz Master</p>
+<p class="text-text-secondary text-xs">Complete 100 quizzes</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-border-dark/50 transition-colors cursor-pointer group">
+<div class="size-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 p-0.5 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+<div class="size-full rounded-full bg-surface-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-500 text-3xl">bolt</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-white font-bold text-sm">Speedster</p>
+<p class="text-text-secondary text-xs">Answer in &lt; 5s</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-border-dark/50 transition-colors cursor-pointer group">
+<div class="size-16 rounded-full bg-gradient-to-br from-primary to-purple-800 p-0.5 shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+<div class="size-full rounded-full bg-surface-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-white font-bold text-sm">Scholar</p>
+<p class="text-text-secondary text-xs">Login 30 days straight</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col items-center justify-center gap-3 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+<div class="size-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 p-0.5">
+<div class="size-full rounded-full bg-surface-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-green-500 text-3xl">workspace_premium</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-white font-bold text-sm">Perfectionist</p>
+<p class="text-text-secondary text-xs">100% on 50 quizzes</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Profile Settings Form -->
+<div class="bg-surface-dark border border-border-dark rounded-2xl p-6 md:p-8">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="text-white text-xl font-bold">Profile Settings</h3>
+<p class="text-text-secondary text-sm">Update your photo and personal details.</p>
+</div>
+<button class="bg-primary hover:bg-primary/80 text-white text-sm font-medium py-2 px-6 rounded-lg transition-colors shadow-lg shadow-primary/20">
+                            Save Changes
+                        </button>
+</div>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Username -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-secondary" for="username">Username</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary text-lg">alternate_email</span>
+</div>
+<input class="block w-full pl-10 rounded-lg border-border-dark bg-background-dark text-white focus:ring-primary focus:border-primary placeholder-gray-500 sm:text-sm py-2.5" id="username" type="text" value="alex_quizmaster"/>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-secondary" for="email">Email Address</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary text-lg">mail</span>
+</div>
+<input class="block w-full pl-10 rounded-lg border-border-dark bg-background-dark text-white focus:ring-primary focus:border-primary placeholder-gray-500 sm:text-sm py-2.5" id="email" type="email" value="alex@example.com"/>
+</div>
+</div>
+<!-- Full Name -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-secondary" for="fullname">Full Name</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary text-lg">person</span>
+</div>
+<input class="block w-full pl-10 rounded-lg border-border-dark bg-background-dark text-white focus:ring-primary focus:border-primary placeholder-gray-500 sm:text-sm py-2.5" id="fullname" type="text" value="Alex Doe"/>
+</div>
+</div>
+<!-- Location -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-secondary" for="location">Location</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary text-lg">location_on</span>
+</div>
+<input class="block w-full pl-10 rounded-lg border-border-dark bg-background-dark text-white focus:ring-primary focus:border-primary placeholder-gray-500 sm:text-sm py-2.5" id="location" type="text" value="New York, USA"/>
+</div>
+</div>
+</div>
+<!-- Bio -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-secondary" for="bio">Bio</label>
+<textarea class="block w-full rounded-lg border-border-dark bg-background-dark text-white focus:ring-primary focus:border-primary placeholder-gray-500 sm:text-sm p-3" id="bio" placeholder="Tell us a little about yourself..." rows="4">Passionate lifelong learner. Love history trivia and science puzzles. Currently aiming for the Grandmaster badge!</textarea>
+</div>
+<div class="border-t border-border-dark my-6 pt-6">
+<h4 class="text-white text-base font-bold mb-4">Notifications &amp; Privacy</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Email Notifications</span>
+<span class="text-xs text-text-secondary">Receive weekly progress reports and badge alerts.</span>
+</div>
+<button aria-checked="true" class="bg-primary relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-dark" role="switch" type="button">
+<span aria-hidden="true" class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Public Profile</span>
+<span class="text-xs text-text-secondary">Allow others to see your badges and rank.</span>
+</div>
+<button aria-checked="true" class="bg-primary relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-dark" role="switch" type="button">
+<span aria-hidden="true" class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+</body></html>

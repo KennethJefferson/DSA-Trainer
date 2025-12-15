@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Learning Hub Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-hover": "#6b11c7",
+                        "background-dark": "#121212", // Very dark gray for main background
+                        "surface-dark": "#1e1e24", // Lighter dark for cards/sidebar
+                        "surface-light": "#2a2a30", // Even lighter for inputs/highlights
+                        "text-main": "#f7f6f8",
+                        "text-muted": "#ad92c9",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem", // rounded-md equivalent roughly
+                        "md": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a30; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-text-main h-screen overflow-hidden flex font-display">
+<!-- Side Navigation -->
+<aside class="w-64 bg-surface-dark h-full flex flex-col border-r border-white/5 flex-shrink-0 transition-all duration-300">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 bg-gradient-to-br from-primary to-purple-400 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">school</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white">Learn<span class="text-primary">X</span></h1>
+</div>
+<nav class="flex-1 px-4 flex flex-col gap-2 mt-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border-l-4 border-primary transition-all" href="#">
+<span class="material-symbols-outlined fill">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">book_2</span>
+<span class="font-medium text-sm">Courses</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-medium text-sm">Quizzes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">trophy</span>
+<span class="font-medium text-sm">Leaderboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</nav>
+<div class="p-4 mt-auto">
+<div class="bg-surface-light rounded-xl p-4 flex flex-col gap-3 border border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-primary" data-alt="User profile picture of a woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBZriGNcfs5TyDL2tkI4ktuLfIwEcJPu5wIdXNHjqmJj3E-ji5-vvUCGJGZS5Lt4bQpmdMG9M6RWdmr-XFi_UEA7LgbJyVCxUcuJ7ZUk-FNgbUHtv3HvomVyU6q0e-Xh_P3xMwN5Vlc6et4KtNR-8nC5FW6CNSSDYcv0MKcE40VEmysBJZ2t7lJS1YkS-jCRGEs9JiFp-mdulcrKKR7Eoje3FSqnhUBUfhSrZC3wdCF9WyD8nSzqu5Lu_xWWIZIKJeh3GG88CSgzNU');"></div>
+<div>
+<p class="text-sm font-bold text-white">Alex Morgan</p>
+<p class="text-xs text-text-muted">Pro Plan</p>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary-hover text-white text-xs font-bold py-2 rounded-lg transition-colors shadow-lg shadow-primary/20">
+                    View Profile
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 h-full overflow-y-auto relative flex flex-col">
+<!-- Top Bar -->
+<header class="sticky top-0 z-20 bg-background-dark/80 backdrop-blur-md border-b border-white/5 px-8 py-4 flex items-center justify-between gap-8">
+<!-- Search Bar -->
+<div class="flex-1 max-w-xl">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-muted group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-surface-dark border-none rounded-lg text-sm text-white placeholder-text-muted focus:ring-2 focus:ring-primary focus:bg-surface-light transition-all shadow-inner" placeholder="Search for courses, quizzes, or topics..." type="text"/>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="relative p-2 rounded-full hover:bg-surface-light text-text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full border border-background-dark"></span>
+</button>
+<div class="h-8 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-2">
+<div class="bg-surface-dark px-3 py-1.5 rounded-full border border-white/5 flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-sm fill">bolt</span>
+<span class="text-sm font-bold text-white">5 Day Streak</span>
+</div>
+</div>
+</div>
+</header>
+<div class="p-8 flex flex-col gap-8 max-w-[1600px] mx-auto w-full pb-20">
+<!-- Welcome & Hero -->
+<div class="flex flex-col lg:flex-row gap-8 items-stretch">
+<!-- Welcome Text -->
+<div class="flex-1 flex flex-col justify-center gap-2 min-w-[300px]">
+<h2 class="text-4xl font-extrabold text-white tracking-tight">Welcome back, Alex! 👋</h2>
+<p class="text-text-muted text-lg">You've completed 75% of your weekly goal. Keep it up!</p>
+<div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+<!-- Stat Card 1 -->
+<div class="bg-surface-dark p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-text-muted text-xs font-medium uppercase tracking-wider">Total XP</span>
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform text-lg">military_tech</span>
+</div>
+<p class="text-2xl font-bold text-white">1,250</p>
+<p class="text-emerald-400 text-xs font-medium mt-1">+150 XP today</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-dark p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-text-muted text-xs font-medium uppercase tracking-wider">Accuracy</span>
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform text-lg">target</span>
+</div>
+<p class="text-2xl font-bold text-white">88%</p>
+<p class="text-emerald-400 text-xs font-medium mt-1">+2% increase</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-dark p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-text-muted text-xs font-medium uppercase tracking-wider">Time Spent</span>
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform text-lg">schedule</span>
+</div>
+<p class="text-2xl font-bold text-white">12h 30m</p>
+<p class="text-emerald-400 text-xs font-medium mt-1">On track</p>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-dark p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-2">
+<span class="text-text-muted text-xs font-medium uppercase tracking-wider">Courses</span>
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform text-lg">school</span>
+</div>
+<p class="text-2xl font-bold text-white">4</p>
+<p class="text-text-muted text-xs font-medium mt-1">2 in progress</p>
+</div>
+</div>
+</div>
+<!-- Resume Active Course Card -->
+<div class="lg:w-[450px] bg-gradient-to-br from-surface-dark to-[#261933] rounded-2xl p-1 border border-white/5 shadow-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-32 bg-primary/20 blur-[80px] rounded-full pointer-events-none"></div>
+<div class="h-full bg-surface-dark/50 backdrop-blur-sm rounded-xl p-6 flex flex-col relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Continue Learning</span>
+<span class="text-white font-bold text-2xl">75%</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-2">
+<h3 class="text-white text-xl font-bold leading-tight">Introduction to React</h3>
+<p class="text-text-muted text-sm mb-2">Lesson 4: Components &amp; Props</p>
+<!-- Progress Bar -->
+<div class="w-full bg-white/10 rounded-full h-2 mb-4 overflow-hidden">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+<button class="w-full bg-white text-background-dark hover:bg-gray-100 font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+<span class="material-symbols-outlined">play_arrow</span>
+                                Resume Lesson
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- My Courses Column -->
+<div class="xl:col-span-2 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="text-xl font-bold text-white">My Courses</h3>
+<a class="text-primary text-sm font-medium hover:text-primary-hover transition-colors" href="#">View All</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Course Card 1 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col h-full">
+<div class="h-40 bg-cover bg-center relative" data-alt="Abstract colorful 3D shapes representing React code" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhag52xfPL_pHymhtObwy3ReiFF_mF7fafgtEeOxZZqOpd0sqD4jOSvZQiQ92VVVwi9I_9khf8nH7gGmf29yYZnlsGa-QDOwcU4Sif1pzTLd8Ulxawak8g82O04U444UUt7tpMUAvt5O6H0qMwVjPCIQvSnecBB4BWVo4KrCF4u186NqC7MkBEZkuhWPpZv3sjbFsX-SsJ6XIVDvFGGZ0jO5ALdTshwd2nuqGk2lPmwLfCENBGMa6q7EcpplbzR2VVKgPkOk2JnqM');">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-90"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded backdrop-blur-md border border-blue-500/20">Frontend</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h4 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">Advanced CSS Layouts</h4>
+<p class="text-text-muted text-sm mb-4 line-clamp-2">Master Flexbox, Grid, and responsive design patterns for modern web development.</p>
+<div class="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-24 bg-surface-light rounded-full h-1.5">
+<div class="bg-emerald-500 h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+<span class="text-xs text-text-muted">45%</span>
+</div>
+<button class="size-8 rounded-full bg-surface-light hover:bg-primary text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col h-full">
+<div class="h-40 bg-cover bg-center relative" data-alt="Code editor screen showing JavaScript code" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAgUJHJPzEvzTFpdEa32sH1u6zkb9vmvw4hPnLL3AsVODpGg8TF4Tl6PYS_2j0udyz2-6CSO3qltbZvrtzQLQPyJhkhdY5KIunpGGr0D_-TG_kBVzDnBBlvucAVts0V1zhrqhU_ppWHDV6XNEiRya6JovRGLdRSZ5aC8zzzRqUuPa0FRWxYUujvz3pRkY9u7-XMOx7gc0KCzZMEXi5fgKV1MVEtsBiVhKAMKpBpBnszBGKytn-AkXAPzEEtzLERHlvCq4JovmTWZU');">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-90"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<span class="bg-yellow-500/20 text-yellow-300 text-xs font-bold px-2 py-1 rounded backdrop-blur-md border border-yellow-500/20">JavaScript</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h4 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">JS Algorithms &amp; Data Structures</h4>
+<p class="text-text-muted text-sm mb-4 line-clamp-2">Learn the fundamental algorithms needed for technical interviews and efficient coding.</p>
+<div class="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-24 bg-surface-light rounded-full h-1.5">
+<div class="bg-emerald-500 h-1.5 rounded-full" style="width: 12%"></div>
+</div>
+<span class="text-xs text-text-muted">12%</span>
+</div>
+<button class="size-8 rounded-full bg-surface-light hover:bg-primary text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Heatmap Mockup -->
+<div class="bg-surface-dark rounded-xl p-6 border border-white/5 mt-4">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-white">Study Activity</h3>
+<select class="bg-surface-light border-none text-xs rounded-lg text-text-muted focus:ring-1 focus:ring-primary py-1 px-3">
+<option>Last 7 Days</option>
+<option>Last Month</option>
+</select>
+</div>
+<div class="flex items-end justify-between gap-2 h-32 w-full">
+<!-- Bars -->
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[40%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">1.5h</div>
+</div>
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[65%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">2.8h</div>
+</div>
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[30%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">1.0h</div>
+</div>
+<div class="flex-1 bg-primary rounded-t-md relative group h-[90%] shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">4.2h</div>
+</div>
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[55%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">2.2h</div>
+</div>
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[20%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">0.8h</div>
+</div>
+<div class="flex-1 bg-surface-light rounded-t-md relative group h-[75%] hover:bg-primary/50 transition-colors">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">3.5h</div>
+</div>
+</div>
+<div class="flex justify-between mt-2 text-xs text-text-muted px-1">
+<span>Mon</span><span>Tue</span><span>Wed</span><span class="text-primary font-bold">Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+</div>
+<!-- Sidebar Right (Quizzes & Social) -->
+<div class="flex flex-col gap-6">
+<!-- Daily Quiz Challenge -->
+<div class="bg-gradient-to-b from-[#362348] to-surface-dark rounded-xl p-6 border border-white/5 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-16 bg-primary/10 blur-3xl rounded-full"></div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-yellow-400 fill">star</span>
+<h3 class="text-lg font-bold text-white">Daily Challenge</h3>
+</div>
+<div class="bg-background-dark/50 backdrop-blur rounded-lg p-4 mb-4 border border-white/5">
+<p class="text-sm font-medium text-white mb-1">CSS Grid Mastery</p>
+<p class="text-xs text-text-muted">10 Questions • Intermediate</p>
+</div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex -space-x-2">
+<div class="size-8 rounded-full border-2 border-surface-dark bg-gray-700 bg-cover" data-alt="User avatar 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD12zB-O_0v3U22hgssxjvL_Jp50OpYpdSd3YvPReUMG2E4AEoN9qFuPnftldf8wxkl7sHOqdWm0v4BeVMbekrevTLTO_BLNY0xYKeXw84yYh4qif4b1LbHyz3Q_wmcnjq5AlJDM9nwgYZe5NQ5DbEqY4iXmr8_5uBKW6n4ojAGHm0OA8jGfT3cr0XkiClxpljGkW1zdQhwDhEN74wLAyoIUrLm-v8ptcAxFdFRHP28zdtlqFfNeJjIFinOA24inEjtYHEHj-jXFUM')"></div>
+<div class="size-8 rounded-full border-2 border-surface-dark bg-gray-700 bg-cover" data-alt="User avatar 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_SX-qUk-fH81AGWJC9oZajyt4s1ki3UIjsO2n_X2C8NKNz5AVHqBrJUfkWpYWxCUv9-7mmffs8hPqiS0YWeVbvKkUguIRD7GBcY9LCF7epAtvWdnNOwvzJQM7gF7mOZX85i9MtABM0Me92hGwAiXP20yj_ifYv4YJ2xAMJ0rdqACgl13C0lc-9jK9aTlcjwlsZjxCZZyXqHNE_Pe7nbeoG4avmX1WFFGw7m0eMGNIARBWot1_Wpm3mNvKzBs6fRBoSnQGu-PAj6w')"></div>
+<div class="size-8 rounded-full border-2 border-surface-dark bg-surface-light flex items-center justify-center text-[10px] text-white font-bold">+120</div>
+</div>
+<span class="text-xs text-primary font-medium">Joined today</span>
+</div>
+<button class="w-full bg-primary hover:bg-primary-hover text-white text-sm font-bold py-2.5 rounded-lg transition-colors shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                            Start Quiz
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Recommended Quizzes List -->
+<div class="bg-surface-dark rounded-xl border border-white/5 overflow-hidden">
+<div class="p-4 border-b border-white/5">
+<h3 class="text-base font-bold text-white">Recommended Quizzes</h3>
+</div>
+<div class="divide-y divide-white/5">
+<a class="flex items-center gap-3 p-4 hover:bg-surface-light transition-colors group" href="#">
+<div class="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">code</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-white">React Hooks Basics</p>
+<p class="text-xs text-text-muted">5 mins • Beginner</p>
+</div>
+<span class="material-symbols-outlined text-text-muted text-lg group-hover:text-white group-hover:translate-x-1 transition-all">chevron_right</span>
+</a>
+<a class="flex items-center gap-3 p-4 hover:bg-surface-light transition-colors group" href="#">
+<div class="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">palette</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-white">UI Design Principles</p>
+<p class="text-xs text-text-muted">8 mins • Intermediate</p>
+</div>
+<span class="material-symbols-outlined text-text-muted text-lg group-hover:text-white group-hover:translate-x-1 transition-all">chevron_right</span>
+</a>
+<a class="flex items-center gap-3 p-4 hover:bg-surface-light transition-colors group" href="#">
+<div class="size-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-white">Bash Command Line</p>
+<p class="text-xs text-text-muted">12 mins • Advanced</p>
+</div>
+<span class="material-symbols-outlined text-text-muted text-lg group-hover:text-white group-hover:translate-x-1 transition-all">chevron_right</span>
+</a>
+</div>
+<div class="p-3">
+<button class="w-full py-2 text-xs font-medium text-text-muted hover:text-white transition-colors">View all recommendations</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

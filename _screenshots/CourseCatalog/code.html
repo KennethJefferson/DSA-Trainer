@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Course Catalog - LearnHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#261933",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white h-screen overflow-hidden flex">
+<!-- Side Navigation -->
+<aside class="w-64 h-full hidden md:flex flex-col bg-surface-dark border-r border-[#362348] flex-shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">school</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white">LearnHub</h1>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">book</span>
+<span class="font-medium">My Courses</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-white bg-primary/20 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-primary fill-1">grid_view</span>
+<span class="font-medium text-primary">Catalog</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-medium">Leaderboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-medium">Community</span>
+</a>
+</nav>
+<div class="p-4 border-t border-[#362348]">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+<div class="mt-4 flex items-center gap-3 px-4 py-2">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-primary/50" data-alt="User avatar profile picture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkfukbFTv6Blcx3ZbAV6aLzkKhnYZdx3wImloYEeiO3DlNyotF3f32061V0fMy4Ts_QpFQ_KqjKwKw3WdsYrJG4Iyh4_ap1lBpjH3CrpcajwFDyJ4Dpbdihlj1dRlQN7xSKVsZp47NHMSUp5IBo-bIKM-mB4EaPQuh_Gwt50c1dXte1EAyT5FPwQgoqTlolZI7frvxJ85FG6rPZy9PVXn6rHrrmMbJg0KKiOHI46EA8kZhjbawXGkmqlrV2vseSJk073La8doi0yY');"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Alex Morgan</span>
+<span class="text-xs text-primary">Pro Member</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-light dark:bg-background-dark relative">
+<!-- Top Navigation -->
+<header class="h-16 flex items-center justify-between px-6 border-b border-[#362348] bg-surface-dark/50 backdrop-blur-md sticky top-0 z-20">
+<div class="flex items-center gap-4 flex-1">
+<div class="md:hidden text-white cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<!-- Search Bar -->
+<div class="relative w-full max-w-md hidden sm:block">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-[#362348] text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm" placeholder="Search for courses, skills, or mentors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full"></span>
+</button>
+<button class="hidden sm:flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[18px] mr-2">add</span>
+                    Create Goal
+                </button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- Hero Section -->
+<section class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-primary to-[#5b0cb3] shadow-lg shadow-primary/20">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&amp;w=2070&amp;auto=format&amp;fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay" data-alt="Abstract geometric purple pattern"></div>
+<div class="relative p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div class="space-y-4 max-w-2xl">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm border border-white/10">
+<span class="material-symbols-outlined text-[16px] mr-1">star</span> Featured Course
+                            </span>
+<h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">Mastering React 18: The Complete Guide</h2>
+<p class="text-white/80 text-lg">Deep dive into hooks, suspense, and concurrent mode. Build 3 production-ready apps.</p>
+<div class="flex items-center gap-4 pt-2">
+<button class="px-6 py-3 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors flex items-center">
+<span class="material-symbols-outlined mr-2">play_arrow</span> Resume Learning
+                                </button>
+<span class="text-white/90 font-medium">80% Complete</span>
+</div>
+</div>
+<div class="hidden lg:block">
+<!-- Circular Progress Decoration -->
+<div class="relative size-32">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<path class="text-white/20" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-white" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="80, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-bold text-xl">80%</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters and Heading -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h3 class="text-2xl font-bold text-white">Explore Courses</h3>
+<p class="text-gray-400 mt-1">Expand your knowledge with our premium content.</p>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-medium whitespace-nowrap">All Courses</button>
+<button class="px-4 py-2 bg-surface-dark text-gray-300 hover:text-white hover:bg-[#362348] rounded-lg font-medium whitespace-nowrap transition-colors">Development</button>
+<button class="px-4 py-2 bg-surface-dark text-gray-300 hover:text-white hover:bg-[#362348] rounded-lg font-medium whitespace-nowrap transition-colors">Design</button>
+<button class="px-4 py-2 bg-surface-dark text-gray-300 hover:text-white hover:bg-[#362348] rounded-lg font-medium whitespace-nowrap transition-colors">Business</button>
+<button class="px-4 py-2 bg-surface-dark text-gray-300 hover:text-white hover:bg-[#362348] rounded-lg font-medium whitespace-nowrap transition-colors flex items-center">
+<span class="material-symbols-outlined text-[18px] mr-1">filter_list</span> Filters
+                        </button>
+</div>
+</div>
+<!-- Course Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">Beginner</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Laptop screen showing code editor with colourful syntax" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDsx5es8QVxM1V4svXK5Wy3SqNQhck4R1SIChGM9rKUclu0OslNmvhFuuiavR9igxkDCvwoZYDL-6FJpXcrOzb0Ciz4HFHlmxwxnC4id8l1KMS9DPwUgcDdYKv0AbQZE5iwLuYUd74NQWc3e5LBLVJX-QbSDBxwsVvGBa_UyRaq5zPa2aFDWlytxRRmPAA6hVnpyfn2hmmQK-DK9w_X2mMjTC1duOoxoQJTdfdKc_KHyXRV5_nDaovb1_Btv0I9phTmAdfoPKLoDmg');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">UI Design Fundamentals</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">Learn the basics of color theory, typography, and layout for digital products.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-[#362348]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[18px]">schedule</span>
+<span class="text-xs text-gray-400">4h 30m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-[18px] fill-1">star</span>
+<span class="text-xs text-white font-medium">4.8</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-primary/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">New</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Futuristic matrix code background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDfIXpKTLDYKSGHdyycu2nR9XlSqc1BckiZwFbEyMdpb-w7f5QCBuUJC19ZV3TXGrEE7-UAKmJZICmAATcZ2QMiBnSy4kKH_s_NL1Slt6FG_TaD2z0RVkjZ5LxNmNMSqHgnUAZ0Hm7IZdMF7dul6HuFFl2drCoiYZO-yi3kplpcBAa39se6F5x8_SQdSpS-UEgldzSd6ygwU1P5G04HH0-ICslz0OoYQgF2hrQ-1V47TJrgwgK0bhWMEEqRZ3GQyqXowPU3AxiC6I');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">Advanced Python Mastery</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">Master decorators, generators, and advanced data structures in Python.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-[#362348]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[18px]">schedule</span>
+<span class="text-xs text-gray-400">12h 15m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-[18px] fill-1">star</span>
+<span class="text-xs text-white font-medium">4.9</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">Intermediate</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Graphs and charts on a computer tablet screen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDx2O4tAbA_R_Y9tNoICThfsPu4-nNKGh5oGCevENirvA8fXACg2rzjIycSKICRHQ4oRI8CRiMQh_sQti3_gze5HTQFGWfbIxexz1ROuLRxIMPGh24K83z9wYwDYkQRQ7jPurfXzGnLFEjYzemyRcNvMOStvRtL9T0m3EUsuXwbgggadiuDNqw53OoA7m7Q4LCTfv5PExRyiIocwWn9tU16ZhMppm_KFVh8e5l-wxDWl7x-wDKCxoNZShTbHc0ZUzqoPrsx4O0XO-w');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">Digital Marketing 101</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">SEO, SEM, and social media strategies to grow your online presence.</p>
+<!-- Progress Bar for Started Course -->
+<div class="mt-auto pt-4 border-t border-[#362348]">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-gray-400">Progress</span>
+<span class="text-primary font-bold">45%</span>
+</div>
+<div class="h-1.5 w-full bg-[#362348] rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">Expert</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="3D abstract blockchain nodes network illustration" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-z0SS_U91BNkMi_PME4G3RRRlHUha3jj-yVWQioWtRje29g87Dx9TJzweK31zf6-KO6P07TrVAN3aaqSihwb-11sekJyfOlhv0GtgWjcSLrwD6qP-oNRr-Yp6JcuJhRRl1F2hNwuNbW-JA8kg20kPzBoVd9SFdmjREgJSki4vZGFG2XkywmroavfCZ5Z0UEfH2Og7Bg5K8HZSvgUYNbmpwAKlfwKsuw3ap_AsrlgyvSyoL0IXY98d92vlwsXmD3cNSj8u7jtbC_E');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">Blockchain Architecture</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">Understand the underlying technology of Bitcoin and Ethereum.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-[#362348]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[18px]">schedule</span>
+<span class="text-xs text-gray-400">8h 45m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-[18px] fill-1">star</span>
+<span class="text-xs text-white font-medium">4.6</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">Beginner</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Person writing SQL code on a monitor" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVmGSWxJdXSsCb4-kRjlo6qPSLgBDPhEJvYpZseQcMP5M4hKp-KSemTpzVSFuZn9HwsLvtnqGSM1PTEMYsU63AJ2r-EVoIMr_58MC1lLIdxDAEOMBNxhY3FpKcmJn3VL4uPPZnPlT_qeiRvpKgp7iL5GQuGiuBIDtp0IbMjRVBNyuGCkt8XxaEElL-cA55Py5Lfxhm4UUwknhIvdF-XlIun97b449tAe7S-p8QNXweArNvYRPSZbR1cRcgTsctg8NJy6AW2WC_sRQ');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">SQL for Data Science</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">Extract and analyze data using complex SQL queries and relational databases.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-[#362348]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[18px]">schedule</span>
+<span class="text-xs text-gray-400">6h 20m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-[18px] fill-1">star</span>
+<span class="text-xs text-white font-medium">4.7</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-[0_0_20px_rgba(127,19,236,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-transparent hover:border-primary/50">
+<div class="relative h-48 bg-gray-800 overflow-hidden">
+<div class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white uppercase tracking-wider">Intermediate</div>
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Code on a screen showing javascript project" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_n8qlyjpzXcUkUqTlNS8jY7CADw5VT4P7glTWm-WFeyDyPZPiz9im1imHyPkpFSsTEeuYSohh-m3TOaadWxHIoNpVlLBkaJdRgyklhqJS2t02JL4OkuVmsFl2NRIAL0WM4UWzXHlSnNT5PiiNcEfBu4cpu4d8lIntG09ypmuAj-6i25lge6DNoTpGGL4kTmvvwtw3nC2poaGRjQKXGdlYOgpsB0cvZLcY5lPOFK3QCxB6hbBwpk0VFVchoQt-hOCUIEcAIJgwgug');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent opacity-80"></div>
+<button class="absolute bottom-3 right-3 size-10 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity shadow-lg translate-y-2 group-hover:translate-y-0 duration-300">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-white leading-tight group-hover:text-primary transition-colors">Vue.js 3 Fundamentals</h4>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">Build dynamic user interfaces with the progressive JavaScript framework.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-[#362348]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[18px]">schedule</span>
+<span class="text-xs text-gray-400">5h 10m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-yellow-500 text-[18px] fill-1">star</span>
+<span class="text-xs text-white font-medium">4.9</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center pt-8 pb-12">
+<button class="px-6 py-3 border border-[#362348] text-white rounded-lg hover:bg-surface-dark hover:border-primary/50 transition-colors flex items-center gap-2 group">
+<span>Load More Courses</span>
+<span class="material-symbols-outlined text-gray-400 group-hover:translate-y-1 transition-transform">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
