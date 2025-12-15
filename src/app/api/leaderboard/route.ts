@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     // Get users with their progress data
     let users;
-    let orderBy: Record<string, "asc" | "desc">;
+    let orderBy: Record<string, "asc" | "desc"> = { totalXp: "desc" };
 
     switch (type) {
       case "quizzes":

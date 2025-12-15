@@ -35,7 +35,7 @@ export default async function EditQuestionPage({ params }: Props) {
     tags: question.tags,
     xpReward: question.xpReward,
     timeLimit: question.timeLimit,
-    hints: (question.hints as QuestionFormData["hints"]) || [],
+    hints: (question.hints as unknown as QuestionFormData["hints"]) || [],
     explanation: question.explanation || "",
     isPublic: question.isPublic,
     content: question.content as QuestionFormData["content"],

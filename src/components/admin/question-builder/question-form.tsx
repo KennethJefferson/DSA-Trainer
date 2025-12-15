@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Card, CardContent, Button, Input, Icon } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { QUESTION_TYPES, DIFFICULTIES, TOPICS, LANGUAGES } from "./constants";
-import type { QuestionFormData, QuestionContent, ValidationResult } from "./types";
+import type { QuestionFormData, QuestionContent, ValidationResult, DragItem, CodeLine } from "./types";
 import { getEmptyQuestion, getEmptyContent } from "./types";
 import { validateQuestion } from "./validation";
 
@@ -766,11 +766,15 @@ function ContentEditor({
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  const items = type === "parsons" ? content.codeLines || [] : content.items || [];
-                  const newItem = type === "parsons"
-                    ? { id: `l-${Date.now()}`, code: "", correctPosition: items.length, correctIndent: 0 }
-                    : { id: `i-${Date.now()}`, text: "", correctPosition: items.length };
-                  updateContent(type === "parsons" ? { codeLines: [...items, newItem] } : { items: [...items, newItem] });
+                  if (type === "parsons") {
+                    const items = content.codeLines || [];
+                    const newItem: CodeLine = { id: `l-${Date.now()}`, code: "", correctPosition: items.length, correctIndent: 0 };
+                    updateContent({ codeLines: [...items, newItem] });
+                  } else {
+                    const items = content.items || [];
+                    const newItem: DragItem = { id: `i-${Date.now()}`, text: "", correctPosition: items.length };
+                    updateContent({ items: [...items, newItem] });
+                  }
                 }}
               >
                 <Icon name="add" size="sm" className="mr-1" />
@@ -784,14 +788,15 @@ function ContentEditor({
                 <Input
                   value={"text" in item ? item.text : item.code || ""}
                   onChange={(e) => {
-                    const key = type === "parsons" ? "codeLines" : "items";
-                    const items = [...((type === "parsons" ? content.codeLines : content.items) || [])];
                     if (type === "parsons") {
-                      (items[idx] as typeof content.codeLines[0]).code = e.target.value;
+                      const items = [...(content.codeLines || [])] as CodeLine[];
+                      items[idx].code = e.target.value;
+                      updateContent({ codeLines: items });
                     } else {
-                      (items[idx] as typeof content.items[0]).text = e.target.value;
+                      const items = [...(content.items || [])] as DragItem[];
+                      items[idx].text = e.target.value;
+                      updateContent({ items: items });
                     }
-                    updateContent({ [key]: items });
                   }}
                   placeholder={type === "parsons" ? "Code line..." : "Step description..."}
                   className={cn("flex-1", type === "parsons" && "font-mono")}
@@ -801,9 +806,9 @@ function ContentEditor({
                     type="number"
                     min={0}
                     max={10}
-                    value={(item as typeof content.codeLines[0]).correctIndent || 0}
+                    value={(item as CodeLine).correctIndent || 0}
                     onChange={(e) => {
-                      const items = [...(content.codeLines || [])];
+                      const items = [...(content.codeLines || [])] as CodeLine[];
                       items[idx].correctIndent = parseInt(e.target.value) || 0;
                       updateContent({ codeLines: items });
                     }}

@@ -6,7 +6,7 @@ import { Button, Icon, Card } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
 export function QuizHints() {
-  const { state, currentQuestion, useHint } = useQuiz();
+  const { state, currentQuestion, useHint: revealHint } = useQuiz();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!currentQuestion?.hints || currentQuestion.hints.length === 0) {
@@ -80,7 +80,7 @@ export function QuizHints() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => useHint(nextHint.id)}
+              onClick={() => revealHint(nextHint.id)}
               className="w-full border-warning text-warning hover:bg-warning/10"
             >
               <Icon name="lightbulb" size="sm" className="mr-2" />

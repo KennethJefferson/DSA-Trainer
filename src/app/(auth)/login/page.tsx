@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button, Input, Card, CardHeader, CardTitle, CardDescription, CardContent, Icon } from "@/components/ui";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
@@ -168,5 +168,34 @@ export default function LoginPage() {
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <Card variant="elevated" className="w-full max-w-md animate-pulse">
+      <CardHeader>
+        <div className="h-8 bg-surface-light rounded w-1/2 mx-auto" />
+        <div className="h-4 bg-surface-light rounded w-2/3 mx-auto mt-2" />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          <div className="h-10 bg-surface-light rounded" />
+          <div className="h-10 bg-surface-light rounded" />
+          <div className="h-4 bg-surface-light rounded w-1/3 mx-auto my-6" />
+          <div className="h-10 bg-surface-light rounded" />
+          <div className="h-10 bg-surface-light rounded" />
+          <div className="h-10 bg-surface-light rounded mt-4" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }

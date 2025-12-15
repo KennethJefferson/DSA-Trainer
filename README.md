@@ -52,7 +52,7 @@ A gamified learning platform for mastering Data Structures & Algorithms through 
 
 - Node.js 18+
 - PostgreSQL 14+
-- pnpm (recommended) or npm
+- npm or pnpm
 
 ### Installation
 
@@ -64,7 +64,7 @@ A gamified learning platform for mastering Data Structures & Algorithms through 
 
 2. **Install dependencies**
    ```bash
-   pnpm install
+   npm install --legacy-peer-deps
    ```
 
 3. **Set up environment variables**
@@ -92,24 +92,30 @@ A gamified learning platform for mastering Data Structures & Algorithms through 
    JUDGE0_API_KEY="your-rapidapi-key"
    ```
 
-4. **Set up the database**
+4. **Generate NextAuth secret**
+   ```bash
+   # Generate a random secret and add to .env as NEXTAUTH_SECRET
+   openssl rand -base64 32
+   ```
+
+5. **Set up the database**
    ```bash
    # Generate Prisma client
-   pnpm prisma generate
+   npx prisma generate
 
    # Run migrations
-   pnpm prisma migrate dev
+   npx prisma migrate dev
 
-   # Seed with sample data
-   pnpm prisma db seed
+   # Seed with sample data (optional)
+   npm run db:seed
    ```
 
-5. **Start the development server**
+6. **Start the development server**
    ```bash
-   pnpm dev
+   npm run dev
    ```
 
-6. **Open the application**
+7. **Open the application**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ### Test Accounts
@@ -150,25 +156,22 @@ prisma/
 
 ```bash
 # Development server
-pnpm dev
+npm run dev
 
 # Build for production
-pnpm build
+npm run build
 
 # Start production server
-pnpm start
+npm start
 
 # Run linting
-pnpm lint
-
-# Type checking
-pnpm type-check
+npm run lint
 
 # Database operations
-pnpm prisma studio      # Open Prisma Studio
-pnpm prisma generate    # Generate client
-pnpm prisma migrate dev # Run migrations
-pnpm prisma db seed     # Seed database
+npm run db:studio       # Open Prisma Studio
+npm run db:generate     # Generate client
+npm run db:migrate      # Run migrations
+npm run db:seed         # Seed database
 ```
 
 ### Environment Setup

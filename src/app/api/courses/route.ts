@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Fetch courses with module count
+    // Fetch courses with modules
     const courses = await prisma.course.findMany({
       where,
       include: {
@@ -43,14 +43,9 @@ export async function GET(request: NextRequest) {
             id: true,
             title: true,
             order: true,
-            _count: {
-              select: { quizzes: true },
-            },
+            quizIds: true,
           },
           orderBy: { order: "asc" },
-        },
-        _count: {
-          select: { modules: true },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -59,67 +54,68 @@ export async function GET(request: NextRequest) {
     // Get user's progress for each course if logged in
     let userProgress: Record<string, { completedModules: number; totalXp: number }> = {};
     if (session?.user?.id) {
-      // Get quiz attempts for courses
-      const courseIds = courses.map((c) => c.id);
-      const quizAttempts = await prisma.quizAttempt.findMany({
-        where: {
-          userId: session.user.id,
-          quiz: {
-            moduleId: {
-              in: courses.flatMap((c) => c.modules.map((m) => m.id)),
-            },
+      // Get all quiz IDs from all courses
+      const allQuizIds = courses.flatMap((c) =>
+        c.modules.flatMap((m) => m.quizIds)
+      );
+
+      if (allQuizIds.length > 0) {
+        const quizAttempts = await prisma.quizAttempt.findMany({
+          where: {
+            userId: session.user.id,
+            quizId: { in: allQuizIds },
           },
-        },
-        select: {
-          quiz: {
-            select: {
-              moduleId: true,
-              module: {
-                select: { courseId: true },
-              },
-            },
+          select: {
+            quizId: true,
+            xpEarned: true,
           },
-          xpEarned: true,
-        },
-      });
+        });
 
-      // Aggregate progress by course
-      const progressMap = new Map<string, Set<string>>();
-      const xpMap = new Map<string, number>();
+        // Build map of completed quizzes
+        const completedQuizzes = new Set(quizAttempts.map((a) => a.quizId));
+        const xpByQuiz = new Map<string, number>();
+        quizAttempts.forEach((a) => {
+          xpByQuiz.set(a.quizId, (xpByQuiz.get(a.quizId) || 0) + a.xpEarned);
+        });
 
-      quizAttempts.forEach((attempt) => {
-        const courseId = attempt.quiz.module?.courseId;
-        const moduleId = attempt.quiz.moduleId;
+        // Calculate progress per course
+        courses.forEach((course) => {
+          let completedModules = 0;
+          let totalXp = 0;
 
-        if (courseId && moduleId) {
-          if (!progressMap.has(courseId)) {
-            progressMap.set(courseId, new Set());
-            xpMap.set(courseId, 0);
-          }
-          progressMap.get(courseId)!.add(moduleId);
-          xpMap.set(courseId, (xpMap.get(courseId) || 0) + attempt.xpEarned);
-        }
-      });
+          course.modules.forEach((module) => {
+            const moduleQuizIds = module.quizIds;
+            if (moduleQuizIds.length > 0) {
+              const completedInModule = moduleQuizIds.filter((qId) =>
+                completedQuizzes.has(qId)
+              ).length;
+              if (completedInModule === moduleQuizIds.length) {
+                completedModules++;
+              }
+              moduleQuizIds.forEach((qId) => {
+                totalXp += xpByQuiz.get(qId) || 0;
+              });
+            }
+          });
 
-      courseIds.forEach((id) => {
-        userProgress[id] = {
-          completedModules: progressMap.get(id)?.size || 0,
-          totalXp: xpMap.get(id) || 0,
-        };
-      });
+          userProgress[course.id] = { completedModules, totalXp };
+        });
+      }
     }
 
     // Format response
     const formattedCourses = courses.map((course) => {
       const totalQuizzes = course.modules.reduce(
-        (sum, m) => sum + m._count.quizzes,
+        (sum, m) => sum + m.quizIds.length,
         0
       );
+      const totalModules = course.modules.length;
 
       const progress = userProgress[course.id];
-      const progressPercent = course._count.modules > 0
-        ? Math.round((progress?.completedModules || 0) / course._count.modules * 100)
-        : 0;
+      const progressPercent =
+        totalModules > 0
+          ? Math.round(((progress?.completedModules || 0) / totalModules) * 100)
+          : 0;
 
       return {
         id: course.id,
@@ -129,14 +125,13 @@ export async function GET(request: NextRequest) {
         thumbnail: course.thumbnail,
         difficulty: course.difficulty,
         topics: course.topics,
-        estimatedHours: course.estimatedHours,
-        totalModules: course._count.modules,
+        totalModules,
         totalQuizzes,
         modules: course.modules.map((m) => ({
           id: m.id,
           title: m.title,
           order: m.order,
-          quizCount: m._count.quizzes,
+          quizCount: m.quizIds.length,
         })),
         progress: session?.user?.id
           ? {
