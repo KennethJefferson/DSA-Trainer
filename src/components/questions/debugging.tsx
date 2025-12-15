@@ -15,9 +15,13 @@ interface Props extends BaseQuestionProps {
   };
 }
 
-interface BugFix {
-  lineNumber: number;
-  fixedCode: string;
+interface TestResult {
+  input: string;
+  expected: string;
+  actual: string;
+  passed: boolean;
+  error?: string;
+  executionTime?: string | null;
 }
 
 export function DebuggingQuestion({
@@ -34,6 +38,7 @@ export function DebuggingQuestion({
   );
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState<string>("");
+  const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [showHints, setShowHints] = useState(false);
 
   useEffect(() => {
@@ -52,23 +57,68 @@ export function DebuggingQuestion({
   const runTests = async () => {
     setIsRunning(true);
     setOutput("");
+    setTestResults([]);
 
     try {
-      // Simulated test execution
-      const results = content.testCases.map((tc, i) => ({
-        input: tc.input,
-        expected: tc.expectedOutput,
-        passed: false, // Would be determined by actual execution
+      // Call the execute API with test cases
+      const response = await fetch("/api/execute?mode=test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          language: content.language,
+          testCases: content.testCases.map((tc, i) => ({
+            id: `test-${i}`,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+          })),
+          timeLimit: question.timeLimit ? Math.min(question.timeLimit, 10) : 5,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        setOutput(`Error: ${data.error || "Execution failed"}`);
+        return;
+      }
+
+      // Map API results
+      const results: TestResult[] = data.testResults.map((r: {
+        input: string;
+        expectedOutput: string;
+        actualOutput: string;
+        passed: boolean;
+        error?: string;
+        executionTime?: string | null;
+      }) => ({
+        input: r.input,
+        expected: r.expectedOutput,
+        actual: r.actualOutput,
+        passed: r.passed,
+        error: r.error,
+        executionTime: r.executionTime,
       }));
 
-      const outputLines = results.map(
-        (r, i) =>
-          `Test ${i + 1}: ${r.passed ? "✓ Passed" : "✗ Failed"}\n  Input: ${r.input}\n  Expected: ${r.expected}`
-      );
+      setTestResults(results);
+
+      // Generate output
+      const passedCount = results.filter(r => r.passed).length;
+      const totalCount = results.length;
+
+      const outputLines = results.map((r, i) => {
+        const status = r.passed ? "PASS" : "FAIL";
+        let line = `[${status}] Test ${i + 1}`;
+        if (r.executionTime) line += ` (${r.executionTime}s)`;
+        line += `\n  Input: ${r.input}\n  Expected: ${r.expected}`;
+        if (r.actual) line += `\n  Actual: ${r.actual}`;
+        if (r.error) line += `\n  Error: ${r.error}`;
+        return line;
+      });
 
       setOutput(
-        outputLines.join("\n\n") +
-          "\n\n---\nCode execution requires Judge0 API setup."
+        `Test Results: ${passedCount}/${totalCount} passed\n\n` +
+        outputLines.join("\n\n")
       );
     } catch (error) {
       setOutput(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
@@ -80,6 +130,8 @@ export function DebuggingQuestion({
   const resetCode = () => {
     setCode(content.buggyCode);
     onAnswer(content.buggyCode);
+    setTestResults([]);
+    setOutput("");
   };
 
   // Calculate which bugs have been fixed
@@ -94,6 +146,8 @@ export function DebuggingQuestion({
   });
 
   const fixedCount = bugStatus.filter((b) => b.isFixed).length;
+  const passedTests = testResults.filter(r => r.passed).length;
+  const hasResults = testResults.length > 0;
 
   return (
     <div className="space-y-4">
@@ -108,9 +162,9 @@ export function DebuggingQuestion({
         </div>
       </div>
 
-      {/* Bug counter */}
+      {/* Bug counter and test status */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <span className="text-sm text-text-muted">
             Bugs found:{" "}
             <span
@@ -122,6 +176,19 @@ export function DebuggingQuestion({
               {fixedCount}/{content.bugs.length}
             </span>
           </span>
+          {hasResults && (
+            <span className="text-sm text-text-muted">
+              Tests:{" "}
+              <span
+                className={cn(
+                  "font-bold",
+                  passedTests === testResults.length ? "text-success" : "text-error"
+                )}
+              >
+                {passedTests}/{testResults.length}
+              </span>
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -203,23 +270,57 @@ export function DebuggingQuestion({
 
       {/* Test Cases */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {content.testCases.map((testCase, i) => (
-          <Card key={i} variant="elevated" className="!p-3">
-            <h4 className="text-xs font-medium text-text-muted mb-2">
-              Test Case {i + 1}
-            </h4>
-            <div className="space-y-1 text-xs font-mono">
-              <div>
-                <span className="text-text-muted">Input: </span>
-                <span className="text-white">{testCase.input}</span>
+        {content.testCases.map((testCase, i) => {
+          const result = testResults[i];
+
+          return (
+            <Card
+              key={i}
+              variant="elevated"
+              className={cn(
+                "!p-3",
+                result?.passed && "border-success",
+                result && !result.passed && "border-error"
+              )}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-xs font-medium text-text-muted">
+                  Test Case {i + 1}
+                </h4>
+                {result && (
+                  <span
+                    className={cn(
+                      "text-xs font-medium px-2 py-0.5 rounded",
+                      result.passed
+                        ? "bg-success/20 text-success"
+                        : "bg-error/20 text-error"
+                    )}
+                  >
+                    {result.passed ? "Passed" : "Failed"}
+                  </span>
+                )}
               </div>
-              <div>
-                <span className="text-text-muted">Expected: </span>
-                <span className="text-success">{testCase.expectedOutput}</span>
+              <div className="space-y-1 text-xs font-mono">
+                <div>
+                  <span className="text-text-muted">Input: </span>
+                  <span className="text-white">{testCase.input}</span>
+                </div>
+                <div>
+                  <span className="text-text-muted">Expected: </span>
+                  <span className="text-success">{testCase.expectedOutput}</span>
+                </div>
+                {result?.actual && (
+                  <div>
+                    <span className="text-text-muted">Actual: </span>
+                    <span className={result.passed ? "text-success" : "text-error"}>
+                      {result.actual}
+                    </span>
+                  </div>
+                )}
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
 
       {/* Output */}

@@ -3,6 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import {
+  runTestCases,
+  allTestsPassed,
+  type TestCaseResult,
+} from "@/lib/services/judge0";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -56,30 +61,39 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Grade each question
-    const questionResults = quiz.questions.map((qq) => {
-      const question = qq.question;
-      const userAnswer = answers[question.id];
-      const questionHints = hintsUsed[question.id] || [];
+    const questionResults = await Promise.all(
+      quiz.questions.map(async (qq) => {
+        const question = qq.question;
+        const userAnswer = answers[question.id];
+        const questionHints = hintsUsed[question.id] || [];
 
-      // Calculate hint penalty
-      const hintPenalty = (question.hints as Array<{ id: string; xpPenalty: number }> || [])
-        .filter((h) => questionHints.includes(h.id))
-        .reduce((sum, h) => sum + h.xpPenalty, 0);
+        // Calculate hint penalty
+        const hintPenalty = (question.hints as Array<{ id: string; xpPenalty: number }> || [])
+          .filter((h) => questionHints.includes(h.id))
+          .reduce((sum, h) => sum + h.xpPenalty, 0);
 
-      // Grade answer based on question type
-      const isCorrect = gradeAnswer(question.type, question.content as Record<string, unknown>, userAnswer);
+        // Grade answer based on question type
+        const gradeResult = await gradeAnswer(
+          question.type,
+          question.content as Record<string, unknown>,
+          userAnswer
+        );
 
-      // Calculate XP earned
-      const xpEarned = isCorrect ? Math.max(0, question.xpReward - hintPenalty) : 0;
+        // Calculate XP earned
+        const xpEarned = gradeResult.isCorrect
+          ? Math.max(0, question.xpReward - hintPenalty)
+          : 0;
 
-      return {
-        questionId: question.id,
-        isCorrect,
-        xpEarned,
-        hintsUsed: questionHints.length,
-        userAnswer,
-      };
-    });
+        return {
+          questionId: question.id,
+          isCorrect: gradeResult.isCorrect,
+          xpEarned,
+          hintsUsed: questionHints.length,
+          userAnswer,
+          codeTestResults: gradeResult.testResults,
+        };
+      })
+    );
 
     // Calculate totals
     const correctCount = questionResults.filter((r) => r.isCorrect).length;
@@ -150,7 +164,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       xpEarned: totalXpEarned,
       timeSpent,
       passed: score >= quiz.passingScore,
-      questionResults,
+      questionResults: questionResults.map((r) => ({
+        questionId: r.questionId,
+        isCorrect: r.isCorrect,
+        xpEarned: r.xpEarned,
+        hintsUsed: r.hintsUsed,
+        testResults: r.codeTestResults,
+      })),
     });
   } catch (error) {
     console.error("Error submitting quiz:", error);
@@ -161,26 +181,37 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+interface GradeResult {
+  isCorrect: boolean;
+  testResults?: TestCaseResult[];
+}
+
 // Helper function to grade answers by question type
-function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer: unknown): boolean {
-  if (userAnswer === undefined || userAnswer === null) return false;
+async function gradeAnswer(
+  type: string,
+  content: Record<string, unknown>,
+  userAnswer: unknown
+): Promise<GradeResult> {
+  if (userAnswer === undefined || userAnswer === null) {
+    return { isCorrect: false };
+  }
 
   switch (type) {
     case "multiple_choice": {
       const options = content.options as Array<{ id: string; isCorrect: boolean }>;
       const correctOption = options.find((o) => o.isCorrect);
-      return correctOption?.id === userAnswer;
+      return { isCorrect: correctOption?.id === userAnswer };
     }
 
     case "multi_select": {
       const options = content.options as Array<{ id: string; isCorrect: boolean }>;
       const correctIds = options.filter((o) => o.isCorrect).map((o) => o.id).sort();
       const userIds = (userAnswer as string[] || []).sort();
-      return JSON.stringify(correctIds) === JSON.stringify(userIds);
+      return { isCorrect: JSON.stringify(correctIds) === JSON.stringify(userIds) };
     }
 
     case "true_false": {
-      return content.isTrue === userAnswer;
+      return { isCorrect: content.isTrue === userAnswer };
     }
 
     case "fill_blank": {
@@ -191,7 +222,7 @@ function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer:
       }>;
       const userAnswers = userAnswer as Record<string, string>;
 
-      return blanks.every((blank) => {
+      const isCorrect = blanks.every((blank) => {
         const userValue = userAnswers[blank.id] || "";
         return blank.acceptedAnswers.some((accepted) =>
           blank.caseSensitive
@@ -199,23 +230,26 @@ function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer:
             : userValue.toLowerCase() === accepted.toLowerCase()
         );
       });
+      return { isCorrect };
     }
 
     case "drag_order": {
       const items = content.items as Array<{ id: string; correctPosition: number }>;
       const userOrder = userAnswer as string[];
 
-      return items.every((item) => {
+      const isCorrect = items.every((item) => {
         const userPosition = userOrder.indexOf(item.id);
         return userPosition === item.correctPosition;
       });
+      return { isCorrect };
     }
 
     case "drag_match": {
       const leftItems = content.leftItems as Array<{ id: string; matchId: string }>;
       const userMatches = userAnswer as Record<string, string>;
 
-      return leftItems.every((item) => userMatches[item.id] === item.matchId);
+      const isCorrect = leftItems.every((item) => userMatches[item.id] === item.matchId);
+      return { isCorrect };
     }
 
     case "drag_code_blocks": {
@@ -224,10 +258,11 @@ function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer:
 
       // Filter out distractors from user answer
       const validBlocks = blocks.filter((b) => b.correctPosition >= 0);
-      return validBlocks.every((block) => {
+      const isCorrect = validBlocks.every((block) => {
         const userPosition = userOrder.indexOf(block.id);
         return userPosition === block.correctPosition;
       });
+      return { isCorrect };
     }
 
     case "parsons": {
@@ -238,7 +273,7 @@ function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer:
       }>;
       const userLines = userAnswer as Array<{ id: string; indent: number }>;
 
-      return codeLines.every((line, index) => {
+      const isCorrect = codeLines.every((line, index) => {
         const userLine = userLines[index];
         return (
           userLine &&
@@ -246,16 +281,101 @@ function gradeAnswer(type: string, content: Record<string, unknown>, userAnswer:
           userLine.indent === line.correctIndent
         );
       });
+      return { isCorrect };
     }
 
-    case "code_writing":
+    case "code_writing": {
+      const code = userAnswer as string;
+      const language = content.language as string;
+      const testCases = content.testCases as Array<{
+        id: string;
+        input: string;
+        expectedOutput: string;
+        isHidden: boolean;
+      }>;
+
+      // If no Judge0 API key, grade based on whether code was modified
+      if (!process.env.JUDGE0_API_KEY) {
+        const starterCode = content.starterCode as string;
+        // In demo mode, just check if code was modified from starter
+        return { isCorrect: code !== starterCode && code.length > 10 };
+      }
+
+      try {
+        // Run all test cases (including hidden ones for grading)
+        const testResults = await runTestCases(
+          code,
+          language,
+          testCases.map((tc) => ({
+            id: tc.id,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+          })),
+          5 // 5 second timeout per test
+        );
+
+        return {
+          isCorrect: allTestsPassed(testResults),
+          testResults,
+        };
+      } catch (error) {
+        console.error("Code execution error:", error);
+        return { isCorrect: false };
+      }
+    }
+
     case "debugging": {
-      // These require code execution to grade properly
-      // For now, return false (would need Judge0 integration)
-      return false;
+      const code = userAnswer as string;
+      const language = content.language as string;
+      const testCases = content.testCases as Array<{
+        input: string;
+        expectedOutput: string;
+      }>;
+      const bugs = content.bugs as Array<{
+        lineNumber: number;
+        correctCode: string;
+      }>;
+
+      // If no Judge0 API key, grade based on bug fixes
+      if (!process.env.JUDGE0_API_KEY) {
+        const codeLines = code.split("\n");
+        const fixedBugs = bugs.filter((bug) => {
+          const currentLine = codeLines[bug.lineNumber - 1]?.trim();
+          return currentLine === bug.correctCode.trim();
+        });
+        return { isCorrect: fixedBugs.length === bugs.length };
+      }
+
+      try {
+        // Run test cases
+        const testResults = await runTestCases(
+          code,
+          language,
+          testCases.map((tc, i) => ({
+            id: `test-${i}`,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+          })),
+          5
+        );
+
+        return {
+          isCorrect: allTestsPassed(testResults),
+          testResults,
+        };
+      } catch (error) {
+        console.error("Code execution error:", error);
+        // Fall back to checking bug fixes
+        const codeLines = code.split("\n");
+        const fixedBugs = bugs.filter((bug) => {
+          const currentLine = codeLines[bug.lineNumber - 1]?.trim();
+          return currentLine === bug.correctCode.trim();
+        });
+        return { isCorrect: fixedBugs.length === bugs.length };
+      }
     }
 
     default:
-      return false;
+      return { isCorrect: false };
   }
 }

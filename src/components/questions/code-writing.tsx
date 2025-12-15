@@ -22,6 +22,7 @@ interface TestResult {
   expected: string;
   actual?: string;
   error?: string;
+  executionTime?: string | null;
 }
 
 export function CodeWritingQuestion({
@@ -60,23 +61,71 @@ export function CodeWritingQuestion({
     setTestResults([]);
 
     try {
-      // In a real implementation, this would call Judge0 API
-      // For now, we'll simulate test execution
-      const results: TestResult[] = content.testCases
-        .filter((tc) => !tc.isHidden || showResult)
-        .map((testCase) => ({
-          id: testCase.id,
-          passed: false, // Would be determined by actual execution
-          input: testCase.input,
-          expected: testCase.expectedOutput,
-          actual: "Execution not available in demo",
-        }));
+      // Get visible test cases
+      const visibleTests = content.testCases.filter(tc => !tc.isHidden || showResult);
+
+      // Call the execute API
+      const response = await fetch("/api/execute?mode=test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          language: content.language,
+          testCases: visibleTests.map(tc => ({
+            id: tc.id,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+          })),
+          timeLimit: question.timeLimit ? Math.min(question.timeLimit, 10) : 5,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        setOutput(`Error: ${data.error || "Execution failed"}`);
+        setActiveTab("output");
+        return;
+      }
+
+      // Map API results to component state
+      const results: TestResult[] = data.testResults.map((r: {
+        id: string;
+        passed: boolean;
+        input: string;
+        expectedOutput: string;
+        actualOutput: string;
+        executionTime?: string | null;
+        error?: string;
+      }) => ({
+        id: r.id,
+        passed: r.passed,
+        input: r.input,
+        expected: r.expectedOutput,
+        actual: r.actualOutput,
+        executionTime: r.executionTime,
+        error: r.error,
+      }));
 
       setTestResults(results);
-      setOutput("Code execution requires Judge0 API setup.\n\nYour code has been saved.");
-      setActiveTab("output");
+
+      // Generate output summary
+      const passed = results.filter(r => r.passed).length;
+      const total = results.length;
+      const summary = `Test Results: ${passed}/${total} passed\n\n`;
+      const details = results.map((r, i) => {
+        const status = r.passed ? "PASS" : "FAIL";
+        let detail = `[${status}] Test ${i + 1}`;
+        if (r.executionTime) detail += ` (${r.executionTime}s)`;
+        if (!r.passed && r.error) detail += `\n  Error: ${r.error}`;
+        return detail;
+      }).join("\n");
+
+      setOutput(summary + details);
+      setActiveTab("tests");
     } catch (error) {
       setOutput(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setActiveTab("output");
     } finally {
       setIsRunning(false);
     }
@@ -85,6 +134,9 @@ export function CodeWritingQuestion({
   const visibleTestCases = content.testCases.filter(
     (tc) => !tc.isHidden || showResult
   );
+
+  const passedCount = testResults.filter(r => r.passed).length;
+  const hasResults = testResults.length > 0;
 
   return (
     <div className="space-y-4">
@@ -114,7 +166,11 @@ export function CodeWritingQuestion({
       <div className="flex border-b border-surface-border">
         {[
           { id: "code", label: "Code", icon: "code" },
-          { id: "tests", label: `Tests (${visibleTestCases.length})`, icon: "checklist" },
+          {
+            id: "tests",
+            label: `Tests (${hasResults ? `${passedCount}/${visibleTestCases.length}` : visibleTestCases.length})`,
+            icon: "checklist",
+          },
           { id: "output", label: "Output", icon: "terminal" },
         ].map((tab) => (
           <button
@@ -197,14 +253,23 @@ export function CodeWritingQuestion({
                       )}
                     </h4>
                     {result && (
-                      <span
-                        className={cn(
-                          "text-xs font-medium",
-                          result.passed ? "text-success" : "text-error"
+                      <div className="flex items-center gap-2">
+                        {result.executionTime && (
+                          <span className="text-xs text-text-muted">
+                            {result.executionTime}s
+                          </span>
                         )}
-                      >
-                        {result.passed ? "Passed" : "Failed"}
-                      </span>
+                        <span
+                          className={cn(
+                            "text-xs font-medium px-2 py-0.5 rounded",
+                            result.passed
+                              ? "bg-success/20 text-success"
+                              : "bg-error/20 text-error"
+                          )}
+                        >
+                          {result.passed ? "Passed" : "Failed"}
+                        </span>
+                      </div>
                     )}
                   </div>
 
@@ -225,6 +290,11 @@ export function CodeWritingQuestion({
                         </span>
                       </div>
                     )}
+                    {result?.error && (
+                      <div className="mt-2 p-2 rounded bg-error/10 border border-error/30">
+                        <span className="text-error">{result.error}</span>
+                      </div>
+                    )}
                   </div>
 
                   {testCase.explanation && (
@@ -235,6 +305,14 @@ export function CodeWritingQuestion({
                 </Card>
               );
             })}
+
+            {/* Run tests prompt if no results */}
+            {!hasResults && (
+              <div className="text-center py-8 text-text-muted">
+                <Icon name="play_circle" size="xl" className="mb-2 opacity-50" />
+                <p className="text-sm">Click "Run Tests" to execute your code</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -250,6 +328,21 @@ export function CodeWritingQuestion({
           </div>
         )}
       </div>
+
+      {/* Solution (shown after submission) */}
+      {showResult && content.solutionCode && (
+        <Card variant="bordered" className="!p-0 border-success/50 overflow-hidden">
+          <div className="px-4 py-2 bg-success/10 border-b border-success/30">
+            <h4 className="text-sm font-medium text-success flex items-center gap-2">
+              <Icon name="check_circle" size="sm" />
+              Solution
+            </h4>
+          </div>
+          <pre className="p-4 text-sm text-gray-300 font-mono whitespace-pre-wrap bg-[#0d1117]">
+            {content.solutionCode}
+          </pre>
+        </Card>
+      )}
     </div>
   );
 }
