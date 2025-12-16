@@ -30,6 +30,18 @@ const config: Config = {
           light: "#2a1d36",
           border: "#362348",
         },
+        // Card colors (from mockups)
+        card: {
+          DEFAULT: "#261933",
+          dark: "#362348",
+          hover: "#3d2a54",
+        },
+        // Border colors (from mockups)
+        border: {
+          DEFAULT: "#362348",
+          dark: "#4d3267",
+          light: "#ffffff10",
+        },
         // Text colors
         text: {
           main: "#f7f6f8",

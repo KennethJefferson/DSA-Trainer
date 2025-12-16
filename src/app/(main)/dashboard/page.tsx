@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { StatCard } from "@/components/dashboard";
+import { StatCard, CourseCardWithImage, DailyChallengeWidget, StudyActivityChart } from "@/components/dashboard";
 import { Button, Card, Icon } from "@/components/ui";
 import Link from "next/link";
 
@@ -329,26 +329,7 @@ export default async function DashboardPage() {
           )}
 
           {/* Daily Challenge */}
-          <div className="bg-gradient-to-b from-[#362348] to-surface-dark rounded-xl p-6 border border-white/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-16 bg-primary/10 blur-3xl rounded-full" />
-            <div className="flex items-center gap-2 mb-4">
-              <Icon name="star" className="text-yellow-400" filled />
-              <h3 className="text-lg font-bold text-white">Daily Challenge</h3>
-            </div>
-            <div className="bg-background/50 backdrop-blur rounded-lg p-4 mb-4 border border-white/5">
-              <p className="text-sm font-medium text-white mb-1">Coming Soon!</p>
-              <p className="text-xs text-text-muted">
-                New challenges will be available once questions are added.
-              </p>
-            </div>
-            <Button
-              variant="secondary"
-              className="w-full"
-              disabled
-            >
-              No Challenge Available
-            </Button>
-          </div>
+          <DailyChallengeWidget challenge={null} />
 
           {/* Quick Links */}
           <Card variant="elevated">

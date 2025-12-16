@@ -16,15 +16,23 @@ export default async function MainLayout({
     redirect("/login");
   }
 
-  // Get user role from database
+  // Get user data from database
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true },
+    select: {
+      role: true,
+      xp: true,
+      level: true,
+      streak: true,
+    },
   });
 
   const userWithRole = {
     ...session.user,
     role: user?.role || "user",
+    xp: user?.xp || 0,
+    level: user?.level || 1,
+    streak: user?.streak || 0,
   };
 
   return (

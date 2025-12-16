@@ -45,6 +45,12 @@ model User {
   progress      UserProgress?
   badges        UserBadge[]
 
+  // New feature relations
+  dailyChallenges DailyChallengeParticipation[]
+  goals           LearningGoal[]
+  forumPosts      ForumPost[]
+  forumComments   ForumComment[]
+
   @@index([email])
   @@index([username])
 }
@@ -120,6 +126,14 @@ enum UserRole {
   superadmin
 }
 
+enum GoalType {
+  quizzes_completed
+  xp_earned
+  streak_days
+  topic_mastery
+  accuracy_target
+}
+
 model Question {
   id          String       @id @default(cuid())
   type        QuestionType
@@ -165,8 +179,9 @@ model Quiz {
   passingScore Int         @default(70) // Percentage
 
   // Relations
-  questions   QuizQuestion[]
-  attempts    QuizAttempt[]
+  questions       QuizQuestion[]
+  attempts        QuizAttempt[]
+  dailyChallenges DailyChallenge[]
 
   // Timestamps
   createdAt   DateTime     @default(now())
@@ -341,4 +356,113 @@ model Module {
   updatedAt   DateTime @updatedAt
 
   @@index([courseId])
+}
+
+// ============================================
+// Daily Challenge Models
+// ============================================
+
+model DailyChallenge {
+  id            String       @id @default(cuid())
+  date          DateTime     @unique @db.Date
+  quizId        String
+  title         String
+  description   String?
+  difficulty    Difficulty
+
+  quiz          Quiz         @relation(fields: [quizId], references: [id])
+  participants  DailyChallengeParticipation[]
+
+  createdAt     DateTime     @default(now())
+
+  @@index([date])
+  @@index([quizId])
+}
+
+model DailyChallengeParticipation {
+  id            String         @id @default(cuid())
+  userId        String
+  challengeId   String
+  completedAt   DateTime?
+  score         Int?
+  xpEarned      Int            @default(0)
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge     DailyChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime       @default(now())
+
+  @@unique([userId, challengeId])
+  @@index([userId])
+  @@index([challengeId])
+}
+
+// ============================================
+// Learning Goals Models
+// ============================================
+
+model LearningGoal {
+  id           String    @id @default(cuid())
+  userId       String
+  title        String
+  description  String?
+  targetValue  Int
+  currentValue Int       @default(0)
+  goalType     GoalType
+  targetDate   DateTime?
+  isCompleted  Boolean   @default(false)
+  completedAt  DateTime?
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([goalType])
+}
+
+// ============================================
+// Community Forum Models
+// ============================================
+
+model ForumPost {
+  id        String         @id @default(cuid())
+  authorId  String
+  title     String
+  content   String         @db.Text
+  category  String         // "question", "discussion", "resource", "showcase"
+  tags      String[]       @default([])
+  upvotes   Int            @default(0)
+  views     Int            @default(0)
+  isPinned  Boolean        @default(false)
+
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  ForumComment[]
+
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([authorId])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model ForumComment {
+  id        String    @id @default(cuid())
+  postId    String
+  authorId  String
+  content   String    @db.Text
+  upvotes   Int       @default(0)
+  parentId  String?   // For nested replies
+
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
 }
