@@ -14,8 +14,9 @@ DSA Trainer is a **fully-featured gamified learning platform** for Data Structur
 - ✅ Phase 3: Code Execution, Leaderboard, Courses, User Stats
 - ✅ Phase 4: Admin Panel & Content Management
 - ✅ Phase 5: Build Verification & Bug Fixes
+- ✅ Phase 6: UI Redesign & New Features (Daily Challenges, Goals, Community Forum)
 
-**Current State:** Build passes - Ready for database setup and testing
+**Current State:** Build passes - All features implemented and tested
 
 ## Tech Stack
 
@@ -40,15 +41,17 @@ src/
 │   │       ├── quizzes/    # Quiz management
 │   │       └── users/      # User management (admin only)
 │   ├── (auth)/            # Authentication pages
-│   │   ├── login/
+│   │   ├── login/         # Two-column login with hero
 │   │   └── register/
 │   ├── (main)/            # Main app (auth-protected)
-│   │   ├── dashboard/     # User dashboard
-│   │   ├── courses/       # Course catalog & detail
+│   │   ├── dashboard/     # User dashboard with stats & activity
+│   │   ├── courses/       # Course catalog with image cards
 │   │   ├── quizzes/       # Quiz browser
-│   │   ├── quiz/[id]/     # Quiz player & results
+│   │   ├── quiz/[id]/     # Quiz player with timer & question map
 │   │   ├── leaderboard/   # Rankings
-│   │   ├── profile/       # User profile
+│   │   ├── profile/       # User profile with heatmap & badges
+│   │   ├── goals/         # Learning goals management
+│   │   ├── community/     # Community forum
 │   │   └── settings/      # User settings
 │   └── api/               # API routes
 │       ├── auth/          # NextAuth + registration
@@ -57,13 +60,17 @@ src/
 │       ├── courses/       # Course endpoints
 │       ├── execute/       # Code execution proxy
 │       ├── leaderboard/   # Ranking data
+│       ├── daily-challenge/  # Daily challenge endpoints
+│       ├── goals/         # Learning goals CRUD
+│       ├── community/     # Forum posts & comments
 │       └── admin/         # Admin-only endpoints
 ├── components/
 │   ├── admin/             # Admin panel components
 │   │   └── question-builder/  # Question form & validation
-│   ├── dashboard/         # Sidebar, Header, StatCard
+│   ├── dashboard/         # Sidebar, Header, StatCard, DailyChallengeWidget
+│   ├── profile/           # ProfileSidebar, ActivityHeatmap, BadgeGrid
 │   ├── questions/         # 10 question type components
-│   ├── quiz/              # Quiz engine components
+│   ├── quiz/              # QuizTimer, QuestionMap, QuizContainer
 │   ├── providers/         # Context providers
 │   └── ui/                # Base UI components
 ├── lib/
@@ -92,6 +99,11 @@ src/
 - **UserProgress** - Stats, topic mastery, daily activity
 - **Badge/UserBadge** - Achievement system
 - **Course/Module** - Learning paths
+- **DailyChallenge** - Daily quiz challenges with participation tracking
+- **DailyChallengeParticipation** - User participation in daily challenges
+- **LearningGoal** - User-defined learning goals with progress tracking
+- **ForumPost** - Community forum posts with categories and upvotes
+- **ForumComment** - Comments on forum posts
 
 ### User Roles
 ```typescript
@@ -146,12 +158,34 @@ GET    /api/courses/:slug           # Get course with modules
 POST   /api/execute                 # Run code (Judge0 proxy)
 GET    /api/leaderboard             # Get rankings
 GET    /api/users/:id/stats         # Get user statistics
+
+# Daily Challenges
+GET    /api/daily-challenge         # Get today's challenge
+POST   /api/daily-challenge         # Create challenge (admin)
+POST   /api/daily-challenge/participate  # Complete challenge (+50 XP)
+
+# Learning Goals
+GET    /api/goals                   # List user's goals
+POST   /api/goals                   # Create goal
+GET    /api/goals/:id               # Get goal
+PATCH  /api/goals/:id               # Update goal (+100 XP on completion)
+DELETE /api/goals/:id               # Delete goal
+
+# Community Forum
+GET    /api/community/posts         # List posts (paginated, filterable)
+POST   /api/community/posts         # Create post
+GET    /api/community/posts/:id     # Get post with comments
+PATCH  /api/community/posts/:id     # Update post (author/admin)
+DELETE /api/community/posts/:id     # Delete post (author/admin)
+POST   /api/community/posts/:id/comments  # Add comment
+POST   /api/community/posts/:id/upvote    # Upvote post
 ```
 
 ### Admin Only
 ```
 GET    /api/admin/users             # List all users
 PATCH  /api/admin/users/:id         # Update user role
+POST   /api/daily-challenge         # Create daily challenge
 ```
 
 ## Design System
@@ -172,8 +206,21 @@ colors: {
 ```
 
 ### Typography
-- Font: Lexend (Google Fonts)
-- Icons: Material Symbols (rounded, weight 400)
+- Font: Lexend (Google Fonts, weights 300-900)
+- Icons: Material Symbols Outlined (variable font with FILL support)
+- Font loading: Via `<link>` tags in layout.tsx with preconnect for performance
+
+### Icon Usage
+```tsx
+// Outline icon
+<Icon name="dashboard" />
+
+// Filled icon
+<Icon name="star" filled />
+
+// With size
+<Icon name="settings" size="lg" />
+```
 
 ### UI Components
 - `Button` - Variants: primary, secondary, outline, ghost, danger
@@ -253,10 +300,10 @@ Arrays, Strings, Linked Lists, Stacks, Queues, Trees, Binary Trees, BST, Heaps, 
 
 ## File Statistics
 
-- **Total Source Files:** 83
-- **React Components:** 29
-- **API Routes:** 18
-- **Prisma Models:** 12
+- **Total Source Files:** 100+
+- **React Components:** 40+
+- **API Routes:** 28
+- **Prisma Models:** 17
 
 ## Quick Start
 
@@ -288,3 +335,27 @@ npm run dev
 - Quiz hints renamed `useHint` → `revealHint` to avoid React hooks naming conflict
 - Course API routes rewritten to use `quizIds` array instead of relations
 - Type assertions added for Prisma JSON fields
+
+## Phase 6 UI Redesign (2025-12-16)
+
+### Pages Redesigned
+- **Login** - Two-column layout with hero image and testimonial
+- **Dashboard** - Stats cards, study activity chart, daily challenge widget, course cards
+- **Course Catalog** - Hero section, filter pills, image-based course cards
+- **Profile** - Sidebar layout, GitHub-style activity heatmap, badge grid, tabbed content
+- **Quiz View** - Two-column layout with timer card and question map navigation
+- **Quiz Results** - Circular progress score, performance trend chart, expandable question review
+
+### New Features Added
+- **Daily Challenges** - Daily quiz challenges with +50 XP bonus, participant tracking
+- **Learning Goals** - Create and track learning objectives with +100 XP on completion
+- **Community Forum** - Discussion forum with categories, upvoting, and comments
+
+### New Components
+- `ProfileSidebar`, `ActivityHeatmap`, `BadgeGrid`, `ProfileTabs`
+- `QuizTimer`, `QuestionMap`
+- `DailyChallengeWidget`
+
+### Navigation Updates
+- Root URL (`/`) now redirects directly to `/login`
+- Sidebar updated with Community and Goals navigation items

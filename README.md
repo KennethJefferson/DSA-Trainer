@@ -11,6 +11,9 @@ A gamified learning platform for mastering Data Structures & Algorithms through 
 - **Learning Paths** - Structured courses with modules and progressive difficulty
 - **Progress Tracking** - Detailed statistics, streaks, and performance analytics
 - **Hints System** - Optional hints with XP penalties to guide learning
+- **Daily Challenges** - Complete daily quizzes for bonus XP rewards
+- **Learning Goals** - Set and track personal learning objectives
+- **Community Forum** - Discuss topics, ask questions, and share knowledge
 
 ### For Administrators
 - **Question Builder** - Visual editor for creating all question types with live validation
@@ -133,20 +136,30 @@ After seeding the database:
 src/
 ├── app/                    # Next.js App Router
 │   ├── (admin)/           # Admin panel routes
-│   ├── (auth)/            # Authentication routes
+│   ├── (auth)/            # Authentication routes (login, register)
 │   ├── (main)/            # Main app routes
+│   │   ├── dashboard/     # User dashboard
+│   │   ├── courses/       # Course catalog
+│   │   ├── quiz/          # Quiz player & results
+│   │   ├── profile/       # User profile
+│   │   ├── goals/         # Learning goals
+│   │   ├── community/     # Community forum
+│   │   └── leaderboard/   # Rankings
 │   └── api/               # API routes
+│       ├── daily-challenge/  # Daily challenge endpoints
+│       ├── goals/           # Goals CRUD
+│       └── community/       # Forum endpoints
 ├── components/
 │   ├── admin/             # Admin components
-│   ├── auth/              # Auth components
-│   ├── dashboard/         # Dashboard components
-│   ├── quiz/              # Quiz components
+│   ├── dashboard/         # Dashboard, Sidebar, Header
+│   ├── profile/           # Profile components (heatmap, badges)
+│   ├── quiz/              # Quiz components (timer, question map)
 │   └── ui/                # Reusable UI components
 ├── lib/                   # Utilities and configurations
 └── types/                 # TypeScript type definitions
 
 prisma/
-├── schema.prisma          # Database schema
+├── schema.prisma          # Database schema (17 models)
 └── seed.ts               # Database seeder
 ```
 

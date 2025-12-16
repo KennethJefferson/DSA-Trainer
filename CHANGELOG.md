@@ -8,6 +8,70 @@ This file is append-only - entries are never deleted, only added.
 
 ## [Unreleased]
 
+### Phase 6 - UI Redesign & New Features (2025-12-16)
+
+#### Added
+- **Daily Challenges Feature**
+  - `GET /api/daily-challenge` - Get today's challenge
+  - `POST /api/daily-challenge` - Create challenge (admin only)
+  - `POST /api/daily-challenge/participate` - Complete challenge (+50 XP bonus)
+  - Dashboard widget showing daily challenge with participant count
+
+- **Learning Goals Feature**
+  - `GET/POST /api/goals` - List and create goals
+  - `GET/PATCH/DELETE /api/goals/:id` - Manage individual goals
+  - Goals page with stats, active/completed sections, create modal
+  - +100 XP awarded on goal completion
+
+- **Community Forum Feature**
+  - `GET/POST /api/community/posts` - List and create posts (paginated, searchable)
+  - `GET/PATCH/DELETE /api/community/posts/:id` - Manage posts
+  - `POST /api/community/posts/:id/comments` - Add comments
+  - `POST /api/community/posts/:id/upvote` - Upvote posts
+  - Forum listing page with category filters
+  - Post detail page with comments
+
+- **New Profile Components**
+  - `ProfileSidebar` - User info, XP progress, stats, social links
+  - `ActivityHeatmap` - GitHub-style 365-day activity grid
+  - `BadgeGrid` - Achievement badges with gradient rings
+  - `ProfileTabs` - Tab navigation for profile sections
+
+- **New Quiz Components**
+  - `QuizTimer` - Digital clock style timer with urgency states
+  - `QuestionMap` - Grid navigation showing question states
+
+- **New Database Models**
+  - `DailyChallenge` - Daily quiz challenges
+  - `DailyChallengeParticipation` - User participation tracking
+  - `LearningGoal` - User learning objectives
+  - `ForumPost` - Community forum posts
+  - `ForumComment` - Comments on posts
+
+#### Changed
+- **Login Page** - Redesigned with two-column layout, hero image, testimonial
+- **Dashboard Page** - Added stats cards, study activity chart, daily challenge widget, course cards with images
+- **Course Catalog Page** - Added hero section, filter pills, image-based course cards
+- **Profile Page** - Redesigned with sidebar layout, activity heatmap, badge grid, tabbed content
+- **Quiz View Page** - Two-column layout with timer card and question map navigation
+- **Quiz Results Page** - Circular progress score, performance trend chart, expandable question review
+- **Sidebar** - Added Community and Goals navigation items
+- **Root URL** - Now redirects directly to `/login` (removed landing page)
+- **Font Loading** - Changed from CSS `@import` to `<link>` tags with preconnect for better performance
+
+#### Fixed
+- Icon component now properly loads Material Symbols Outlined font
+- Font loading matches original mockup implementation
+
+#### Technical Notes
+- 6 pages completely redesigned to match HTML mockups
+- 3 new features implemented with full CRUD APIs
+- 5 new Prisma models added
+- 10+ new React components created
+- Build passes with no errors
+
+---
+
 ### Phase 5 - Testing & Build Verification (2025-12-15)
 
 #### Added
